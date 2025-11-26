@@ -1,0 +1,552 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Network Theory Exam Study Guide</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div class="title-page">
+            <h1>Network Theory Exam Study Guide</h1>
+            <p>Comprehensive Guide for Units III-VI</p>
+            <p>Undergraduate Level</p>
+        </div>
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li>Unit III: Network Layer</li>
+                <li>Unit IV: Transport Layer</li>
+                <li>Unit V: Application Layer</li>
+                <li>Unit VI: Network Security</li>
+                <li>Glossary</li>
+            </ul>
+        </div>
+    <div class='section'><h1>Unit III: Network Layer</h1>
+<h2>1. Prerequisite Review</h2>
+<p>Before diving into the Network Layer, let's recall a few key concepts:
+*   <strong>Data Encapsulation</strong>: Data moves down the layers, getting wrapped in headers. The Network Layer adds an <strong>IP Header</strong> to the Transport Layer segment, creating a <strong>Packet</strong>.
+*   <strong>Addressing</strong>: Just like houses have addresses, devices on a network need unique identifiers. We've seen MAC addresses (Data Link Layer) which are physical and permanent. Now we introduce <strong>IP Addresses</strong> (Network Layer) which are logical and hierarchical.
+*   <strong>The Goal</strong>: The Network Layer is responsible for <strong>Host-to-Host delivery</strong>. It's like the postal service ensuring a letter gets from your house to your friend's house, regardless of the path it takes.</p>
+<hr />
+<h2>2. IPv4 Addressing</h2>
+<p><strong>Internet Protocol version 4 (IPv4)</strong> is the fundamental addressing system of the internet.</p>
+<h3>2.1 Structure and Notation</h3>
+<ul>
+<li><strong>Analogy</strong>: Think of an IP address like a phone number. It has an area code (Network ID) and a subscriber number (Host ID).</li>
+<li><strong>Format</strong>: A 32-bit address, typically written in <strong>Dotted Decimal Notation</strong> (e.g., <code>192.168.1.1</code>).</li>
+<li><strong>Bits</strong>: 32 bits total, divided into 4 octets (8 bits each).<ul>
+<li>Example: <code>11000000.10101000.00000001.00000001</code> = <code>192.168.1.1</code></li>
+</ul>
+</li>
+</ul>
+<h3>2.2 Classful Addressing (Legacy)</h3>
+<p>Originally, IP addresses were divided into "Classes" to define the network size.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Class</th>
+<th style="text-align: left;">Leading Bits</th>
+<th style="text-align: left;">Range (1st Octet)</th>
+<th style="text-align: left;">Default Subnet Mask</th>
+<th style="text-align: left;">Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>A</strong></td>
+<td style="text-align: left;"><code>0</code></td>
+<td style="text-align: left;">1 - 126</td>
+<td style="text-align: left;">255.0.0.0 (/8)</td>
+<td style="text-align: left;">Huge networks (ISPs, Gov)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>B</strong></td>
+<td style="text-align: left;"><code>10</code></td>
+<td style="text-align: left;">128 - 191</td>
+<td style="text-align: left;">255.255.0.0 (/16)</td>
+<td style="text-align: left;">Medium networks (Universities)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>C</strong></td>
+<td style="text-align: left;"><code>110</code></td>
+<td style="text-align: left;">192 - 223</td>
+<td style="text-align: left;">255.255.255.0 (/24)</td>
+<td style="text-align: left;">Small networks (Home/Office)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>D</strong></td>
+<td style="text-align: left;"><code>1110</code></td>
+<td style="text-align: left;">224 - 239</td>
+<td style="text-align: left;">N/A</td>
+<td style="text-align: left;">Multicast (Streaming)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>E</strong></td>
+<td style="text-align: left;"><code>1111</code></td>
+<td style="text-align: left;">240 - 255</td>
+<td style="text-align: left;">N/A</td>
+<td style="text-align: left;">Experimental/Research</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Problem</strong>: Inefficient. A Class A network has 16 million addresses! If a company needed 5000, giving them a Class B (65,000) wasted 60,000 addresses.</li>
+</ul>
+<h3>2.3 Subnetting</h3>
+<p><strong>Subnetting</strong> is the process of borrowing bits from the Host ID to create a Subnet ID.
+*   <strong>Analogy</strong>: A large office building (Network) is divided into floors (Subnets). The main address gets you to the building, the floor number gets you to the department.
+*   <strong>Benefit</strong>: Reduces network traffic (broadcast domains) and improves security.
+*   <strong>Subnet Mask</strong>: A 32-bit number that tells the computer which part of the IP is the Network and which is the Host.
+    *   <code>1</code>s represent the Network.
+    *   <code>0</code>s represent the Host.</p>
+<h3>2.4 CIDR (Classless Inter-Domain Routing)</h3>
+<p><strong>CIDR</strong> replaced Classful addressing. It allows for flexible network sizes using "slash notation".
+*   <strong>Notation</strong>: <code>IP_Address / Prefix_Length</code>
+*   <strong>Example</strong>: <code>192.168.1.0/24</code> means the first 24 bits are the network.
+*   <strong>VLSM (Variable Length Subnet Mask)</strong>: Allows a network administrator to use different subnet masks for subnets of the same network, optimizing address usage.</p>
+<h3>2.5 NAT (Network Address Translation)</h3>
+<p><strong>NAT</strong> allows multiple devices on a private network to share a single public IP address.
+*   <strong>Analogy</strong>: An apartment complex has one main mailing address. The concierge (NAT Router) sorts the mail to individual apartment numbers (Private IPs).
+*   <strong>Private IP Ranges</strong> (Not routable on the internet):
+    *   <code>10.0.0.0</code> - <code>10.255.255.255</code>
+    *   <code>172.16.0.0</code> - <code>172.31.255.255</code>
+    *   <code>192.168.0.0</code> - <code>192.168.255.255</code></p>
+<hr />
+<h2>3. IPv6 Addressing</h2>
+<p>We ran out of IPv4 addresses! <strong>IPv6</strong> is the successor.</p>
+<h3>3.1 Key Differences</h3>
+<ul>
+<li><strong>Size</strong>: 128-bit address (vs 32-bit). That's enough for every grain of sand on Earth to have an IP.</li>
+<li><strong>Format</strong>: Hexadecimal, separated by colons.<ul>
+<li>Example: <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code></li>
+</ul>
+</li>
+<li><strong>Header</strong>: Simplified header for faster processing. No checksum (Transport layer handles it).</li>
+</ul>
+<h3>3.2 Address Types</h3>
+<ol>
+<li><strong>Unicast</strong>: One-to-One. (Send to a specific device).</li>
+<li><strong>Multicast</strong>: One-to-Many. (Send to a group).</li>
+<li><strong>Anycast</strong>: One-to-Nearest. (Send to the closest server in a group, e.g., DNS).<ul>
+<li><em>Note: IPv6 has no Broadcast.</em></li>
+</ul>
+</li>
+</ol>
+<h3>3.3 Transition Strategies</h3>
+<p>How do we switch from IPv4 to IPv6?
+1.  <strong>Dual Stack</strong>: Devices run both IPv4 and IPv6 simultaneously.
+2.  <strong>Tunneling</strong>: Wrapping an IPv6 packet inside an IPv4 packet to cross an IPv4 network.
+3.  <strong>Translation</strong>: Converting headers between versions (NAT64).</p>
+<hr />
+<h2>4. Routing</h2>
+<p><strong>Routing</strong> is finding the best path for a packet to travel from source to destination.</p>
+<h3>4.1 Static vs Dynamic</h3>
+<ul>
+<li><strong>Static Routing</strong>: Admin manually types in the routes.<ul>
+<li><em>Pros</em>: Secure, no overhead.</li>
+<li><em>Cons</em>: Doesn't adapt to failures. Hard to manage in large networks.</li>
+</ul>
+</li>
+<li><strong>Dynamic Routing</strong>: Routers talk to each other to learn paths.<ul>
+<li><em>Pros</em>: Automatic, scalable, adapts to broken links.</li>
+<li><em>Cons</em>: Uses bandwidth and CPU.</li>
+</ul>
+</li>
+</ul>
+<h3>4.2 Distance Vector Routing (e.g., RIP)</h3>
+<ul>
+<li><strong>Concept</strong>: "Tell your neighbors about the world."</li>
+<li><strong>Metric</strong>: Hop count (number of routers to cross).</li>
+<li><strong>Algorithm</strong>: Bellman-Ford.</li>
+<li><strong>Problem</strong>: <strong>Count-to-Infinity</strong>. If A tells B "I can reach C", and the link to C breaks, A might learn a path to C <em>through</em> B (which is actually A -&gt; B -&gt; A -&gt; ...).<ul>
+<li><em>Fix</em>: Split Horizon (don't tell a neighbor about a route you learned from them).</li>
+</ul>
+</li>
+</ul>
+<h3>4.3 Link State Routing (e.g., OSPF)</h3>
+<ul>
+<li><strong>Concept</strong>: "Tell the world about your neighbors."</li>
+<li><strong>Mechanism</strong>:<ol>
+<li>Discover neighbors (Hello packets).</li>
+<li>Measure cost (delay, bandwidth).</li>
+<li>Flood <strong>LSA (Link State Advertisements)</strong> to everyone.</li>
+<li>Build a map of the entire network.</li>
+<li>Run <strong>Dijkstra's Algorithm</strong> to find the Shortest Path.</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2>5. Protocols</h2>
+<h3>5.1 IP (Internet Protocol)</h3>
+<ul>
+<li><strong>Unreliable</strong>: Best effort delivery. No guarantees.</li>
+<li><strong>Connectionless</strong>: Each packet is independent.</li>
+</ul>
+<h3>5.2 ICMP (Internet Control Message Protocol)</h3>
+<ul>
+<li><strong>Purpose</strong>: Error reporting and diagnostics.</li>
+<li><strong>Tools</strong>: <code>ping</code> (Echo Request/Reply) and <code>traceroute</code>.</li>
+<li><strong>Messages</strong>: "Destination Unreachable", "Time Exceeded" (TTL expired).</li>
+</ul>
+<h3>5.3 ARP (Address Resolution Protocol)</h3>
+<ul>
+<li><strong>Problem</strong>: I know the IP address (<code>192.168.1.5</code>), but I need the MAC address to send the frame.</li>
+<li><strong>Solution</strong>: Broadcast "Who has 192.168.1.5?"</li>
+<li><strong>Reply</strong>: "I do! Here is my MAC."</li>
+<li><strong>RARP</strong>: Reverse ARP (Diskless workstations asking "What is my IP?").</li>
+</ul>
+<h3>5.4 Fragmentation</h3>
+<ul>
+<li><strong>MTU (Maximum Transmission Unit)</strong>: The largest packet a network link can carry (usually 1500 bytes for Ethernet).</li>
+<li><strong>Process</strong>: If a packet is too big, the router breaks it into fragments.</li>
+<li><strong>Reassembly</strong>: Happens <strong>only at the destination</strong>, not intermediate routers.</li>
+</ul>
+<hr />
+<h2>Unit III Summary</h2>
+<ul>
+<li><strong>IPv4</strong> uses 32-bit addresses; <strong>IPv6</strong> uses 128-bit addresses.</li>
+<li><strong>Subnetting</strong> divides networks; <strong>CIDR</strong> allows flexible sizing.</li>
+<li><strong>Routing</strong> finds the path: <strong>Distance Vector</strong> (Hops, Neighbors) vs <strong>Link State</strong> (Map, Dijkstra).</li>
+<li><strong>ARP</strong> maps IP to MAC. <strong>ICMP</strong> helps debug.</li>
+</ul></div><hr><div class='section'><h1>Unit IV: Transport Layer</h1>
+<h2>1. Prerequisite Review</h2>
+<ul>
+<li><strong>Host-to-Host vs. Process-to-Process</strong>: The Network Layer gets the packet to the correct computer (Host). The Transport Layer gets it to the correct application (Process) running on that computer.</li>
+<li><strong>Reliability</strong>: The Network Layer (IP) is unreliable. The Transport Layer is responsible for fixing errors, if needed.</li>
+</ul>
+<hr />
+<h2>2. Services &amp; Fundamentals</h2>
+<h3>2.1 Port Addressing</h3>
+<ul>
+<li><strong>Analogy</strong>: The IP address is the apartment building address. The <strong>Port Number</strong> is the specific apartment number where a person (application) lives.</li>
+<li><strong>Socket</strong>: IP Address + Port Number = Socket (e.g., <code>192.168.1.1:80</code>). This uniquely identifies a connection.</li>
+<li><strong>Well-Known Ports</strong>:<ul>
+<li>80: HTTP (Web)</li>
+<li>443: HTTPS (Secure Web)</li>
+<li>25: SMTP (Email)</li>
+<li>53: DNS</li>
+</ul>
+</li>
+</ul>
+<h3>2.2 Multiplexing &amp; Demultiplexing</h3>
+<ul>
+<li><strong>Multiplexing (Sender)</strong>: Gathering data from different apps (Chrome, Spotify, Zoom), adding headers, and sending them out as a single stream of packets.</li>
+<li><strong>Demultiplexing (Receiver)</strong>: Receiving the stream, checking the Port Number, and delivering the data to the correct app.</li>
+</ul>
+<hr />
+<h2>3. UDP (User Datagram Protocol)</h2>
+<p><strong>UDP</strong> is the "fire and forget" protocol.</p>
+<h3>3.1 Characteristics</h3>
+<ul>
+<li><strong>Connectionless</strong>: No handshake. Just send.</li>
+<li><strong>Unreliable</strong>: No guarantees. If a packet is lost, it's gone.</li>
+<li><strong>Fast</strong>: Low overhead (small header).</li>
+<li><strong>Use Cases</strong>: Streaming (YouTube, Netflix), VoIP (Skype), Gaming (where speed &gt; perfection).</li>
+</ul>
+<h3>3.2 Header</h3>
+<ul>
+<li>Very simple, only 8 bytes:<ol>
+<li>Source Port</li>
+<li>Destination Port</li>
+<li>Length</li>
+<li>Checksum (for error detection)</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2>4. TCP (Transmission Control Protocol)</h2>
+<p><strong>TCP</strong> is the reliable workhorse of the internet.</p>
+<h3>4.1 Characteristics</h3>
+<ul>
+<li><strong>Connection-Oriented</strong>: Must establish a connection before sending data.</li>
+<li><strong>Reliable</strong>: Guarantees delivery, in order, without errors.</li>
+<li><strong>Byte-Stream</strong>: Data is sent as a continuous stream of bytes.</li>
+</ul>
+<h3>4.2 The 3-Way Handshake (Connection Setup)</h3>
+<p>Before talking, Alice and Bob must agree to talk.
+1.  <strong>SYN</strong> (Synchronize): Client sends "Let's connect! My sequence number is X."
+2.  <strong>SYN-ACK</strong>: Server says "Okay! I see X. My sequence number is Y."
+3.  <strong>ACK</strong>: Client says "Okay! I see Y. Connection established."</p>
+<h3>4.3 Flow Control</h3>
+<p><strong>Flow Control</strong> prevents the sender from overwhelming the <strong>receiver</strong>.
+*   <strong>Sliding Window Protocol</strong>: The receiver tells the sender "I have room for 5000 bytes" (Window Size). The sender sends 5000 bytes and waits for an update.
+*   <strong>Analogy</strong>: Eating a hot dog. You tell the person feeding you "Slow down!" if your mouth is full.</p>
+<h3>4.4 Congestion Control</h3>
+<p><strong>Congestion Control</strong> prevents the sender from overwhelming the <strong>network</strong> (routers).
+*   <strong>Analogy</strong>: Traffic jam. If everyone drives onto the highway at once, no one moves.
+*   <strong>Algorithms</strong>:
+    1.  <strong>Slow Start</strong>: Start sending slowly (1 packet). If successful, double it (2, 4, 8...). Exponential growth.
+    2.  <strong>Congestion Avoidance</strong>: When a threshold is reached, grow linearly (add 1).
+    3.  <strong>Congestion Detection</strong>: If a packet is lost (timeout), assume congestion. Drop the speed dramatically (back to 1 or half).
+    4.  <strong>AIMD (Additive Increase, Multiplicative Decrease)</strong>: Slowly increase speed to find the limit, but cut speed by half immediately if a problem occurs.</p>
+<hr />
+<h2>5. Reliability Mechanisms</h2>
+<p>How does TCP ensure reliability?</p>
+<ol>
+<li><strong>Sequence Numbers</strong>: Every byte is numbered. The receiver can reorder packets if they arrive out of order.</li>
+<li><strong>Acknowledgments (ACK)</strong>: The receiver tells the sender "I received everything up to byte X."</li>
+<li><strong>Retransmission</strong>:<ul>
+<li><strong>Timeout</strong>: If I don't get an ACK after a certain time, I assume the packet is lost and send it again.</li>
+<li><strong>Fast Retransmit</strong>: If I get 3 duplicate ACKs for the same packet, I know the <em>next</em> packet is missing, so I resend it immediately without waiting for the timer.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>Unit IV Summary</h2>
+<ul>
+<li><strong>UDP</strong> is fast but unreliable (Streaming). <strong>TCP</strong> is reliable but slower (Web, Email).</li>
+<li><strong>Ports</strong> identify applications.</li>
+<li><strong>3-Way Handshake</strong> establishes a TCP connection.</li>
+<li><strong>Flow Control</strong> protects the receiver (Sliding Window).</li>
+<li><strong>Congestion Control</strong> protects the network (Slow Start, AIMD).</li>
+</ul></div><hr><div class='section'><h1>Unit V: Application Layer</h1>
+<h2>1. Prerequisite Review</h2>
+<ul>
+<li><strong>User Interface</strong>: The Application Layer is where the human interacts with the network. It's the web browser, the email client, the file transfer tool.</li>
+<li><strong>Client-Server Model</strong>: Most apps work this way. A <strong>Client</strong> (your phone) requests a service, and a <strong>Server</strong> (a powerful computer in a data center) provides it.</li>
+</ul>
+<hr />
+<h2>2. DNS (Domain Name System)</h2>
+<p><strong>DNS</strong> is the phonebook of the internet.</p>
+<h3>2.1 Hierarchy</h3>
+<ul>
+<li><strong>Root Servers</strong>: The top of the tree (represented by a dot <code>.</code>).</li>
+<li><strong>TLD (Top-Level Domain)</strong>: <code>.com</code>, <code>.org</code>, <code>.edu</code>, <code>.in</code>.</li>
+<li><strong>Authoritative Servers</strong>: The servers that actually know the IP address for a specific domain (e.g., <code>google.com</code>).</li>
+</ul>
+<h3>2.2 Resolution Process</h3>
+<p>How does your computer find <code>www.example.com</code>?
+1.  <strong>Browser Cache</strong>: "Have I been there recently?"
+2.  <strong>OS Cache</strong>: "Does my computer know?"
+3.  <strong>Resolver (ISP)</strong>: "Hey ISP, do you know?"
+4.  <strong>Root Server</strong>: "I don't know, but here is the address for <code>.com</code>."
+5.  <strong>TLD Server</strong>: "I don't know, but here is the address for <code>example.com</code>."
+6.  <strong>Authoritative Server</strong>: "Yes! The IP is <code>93.184.216.34</code>."</p>
+<h3>2.3 Record Types</h3>
+<ul>
+<li><strong>A</strong>: IPv4 Address.</li>
+<li><strong>AAAA</strong>: IPv6 Address.</li>
+<li><strong>MX</strong>: Mail Exchange (Email server).</li>
+<li><strong>CNAME</strong>: Canonical Name (Alias, e.g., <code>www</code> -&gt; <code>server1</code>).</li>
+<li><strong>NS</strong>: Name Server (Who is authoritative?).</li>
+</ul>
+<hr />
+<h2>3. HTTP (HyperText Transfer Protocol)</h2>
+<p><strong>HTTP</strong> is the protocol of the World Wide Web.</p>
+<h3>3.1 Request/Response</h3>
+<ul>
+<li><strong>Request</strong>: Client sends "GET /index.html HTTP/1.1".</li>
+<li><strong>Response</strong>: Server sends "HTTP/1.1 200 OK" followed by the webpage.</li>
+</ul>
+<h3>3.2 Methods (Verbs)</h3>
+<ul>
+<li><strong>GET</strong>: Retrieve data (Loading a page).</li>
+<li><strong>POST</strong>: Submit data (Filling a form).</li>
+<li><strong>PUT</strong>: Update data (Uploading a file).</li>
+<li><strong>DELETE</strong>: Remove data.</li>
+</ul>
+<h3>3.3 Status Codes</h3>
+<ul>
+<li><strong>2xx (Success)</strong>: 200 OK.</li>
+<li><strong>3xx (Redirection)</strong>: 301 Moved Permanently.</li>
+<li><strong>4xx (Client Error)</strong>: 404 Not Found (You typed the URL wrong).</li>
+<li><strong>5xx (Server Error)</strong>: 500 Internal Server Error (The server crashed).</li>
+</ul>
+<h3>3.4 HTTPS &amp; TLS/SSL</h3>
+<ul>
+<li><strong>HTTP</strong> is plain text. Anyone can spy on it.</li>
+<li><strong>HTTPS</strong> is HTTP + <strong>SSL/TLS</strong> (Encryption). It ensures:<ol>
+<li><strong>Privacy</strong>: No one can read the data.</li>
+<li><strong>Integrity</strong>: No one changed the data.</li>
+<li><strong>Authentication</strong>: You are talking to the real bank, not a fake one.</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2>4. Email Protocols</h2>
+<p>Sending an email involves multiple protocols.</p>
+<h3>4.1 SMTP (Simple Mail Transfer Protocol)</h3>
+<ul>
+<li><strong>Role</strong>: <strong>Pushing</strong> mail.</li>
+<li>Used by the sender to send email to the server, and by servers to send email to other servers.</li>
+</ul>
+<h3>4.2 POP3 (Post Office Protocol v3)</h3>
+<ul>
+<li><strong>Role</strong>: <strong>Pulling</strong> mail.</li>
+<li><strong>Behavior</strong>: Downloads email to your device and deletes it from the server. Good for one device, bad for multiple (phone + laptop).</li>
+</ul>
+<h3>4.3 IMAP (Internet Message Access Protocol)</h3>
+<ul>
+<li><strong>Role</strong>: <strong>Syncing</strong> mail.</li>
+<li><strong>Behavior</strong>: Reads email on the server. Keeps everything in sync across multiple devices.</li>
+</ul>
+<h3>4.4 MIME (Multipurpose Internet Mail Extensions)</h3>
+<ul>
+<li>SMTP only supports text. <strong>MIME</strong> allows sending images, audio, video, and non-English characters in email.</li>
+</ul>
+<hr />
+<h2>5. Other Protocols</h2>
+<h3>5.1 FTP (File Transfer Protocol)</h3>
+<ul>
+<li>Used for transferring large files.</li>
+<li><strong>Two Connections</strong>:<ol>
+<li><strong>Control Connection (Port 21)</strong>: Sends commands (Login, CD, LS).</li>
+<li><strong>Data Connection (Port 20)</strong>: Sends the actual file.</li>
+</ol>
+</li>
+</ul>
+<h3>5.2 DHCP (Dynamic Host Configuration Protocol)</h3>
+<ul>
+<li><strong>Role</strong>: Automatically assigns IP addresses to devices when they join a network.</li>
+<li><strong>Process (DORA)</strong>:<ol>
+<li><strong>D</strong>iscover: "Is there a DHCP server?"</li>
+<li><strong>O</strong>ffer: "Yes, you can use <code>192.168.1.50</code>."</li>
+<li><strong>R</strong>equest: "Great, I'll take it."</li>
+<li><strong>A</strong>cknowledge: "It's yours for 24 hours."</li>
+</ol>
+</li>
+</ul>
+<h3>5.3 SSH (Secure Shell) vs Telnet</h3>
+<ul>
+<li><strong>Telnet</strong>: Remote login, but sends passwords in plain text (Unsafe!).</li>
+<li><strong>SSH</strong>: Encrypted remote login (Safe!). Used by admins to manage servers.</li>
+</ul>
+<hr />
+<h2>Unit V Summary</h2>
+<ul>
+<li><strong>DNS</strong> translates Names to IPs.</li>
+<li><strong>HTTP</strong> transfers web pages; <strong>HTTPS</strong> secures them.</li>
+<li><strong>SMTP</strong> sends email; <strong>IMAP</strong> syncs it.</li>
+<li><strong>DHCP</strong> gives you an IP address automatically.</li>
+</ul></div><hr><div class='section'><h1>Unit VI: Network Security</h1>
+<h2>1. Prerequisite Review</h2>
+<ul>
+<li><strong>The Internet is Public</strong>: By default, the internet is like a postcard. Anyone handling it can read it. Security is about putting that postcard in a sealed envelope (Encryption).</li>
+<li><strong>Trust</strong>: How do you know the website you are visiting is actually your bank and not a hacker? (Authentication).</li>
+</ul>
+<hr />
+<h2>2. Fundamentals</h2>
+<h3>2.1 Security Services (CIA Triad + 2)</h3>
+<ol>
+<li><strong>Confidentiality</strong>: Only authorized people can read the data. (Privacy).</li>
+<li><strong>Integrity</strong>: The data hasn't been changed in transit.</li>
+<li><strong>Availability</strong>: The system is up and running when needed.</li>
+<li><strong>Authentication</strong>: Verifying the identity of the user/sender.</li>
+<li><strong>Non-Repudiation</strong>: The sender cannot deny sending the message later (like a digital signature).</li>
+</ol>
+<h3>2.2 Threats &amp; Attacks</h3>
+<ul>
+<li><strong>Passive Attack</strong>: The hacker just listens (Eavesdropping). Hard to detect, easy to prevent (Encryption).</li>
+<li><strong>Active Attack</strong>: The hacker changes data or disrupts service. Easy to detect, hard to prevent.<ul>
+<li><strong>Masquerading</strong>: Pretending to be someone else (Spoofing).</li>
+<li><strong>Replay</strong>: Recording a valid message (like a bank transfer) and sending it again later.</li>
+<li><strong>DoS (Denial of Service)</strong>: Flooding a server with traffic so it crashes.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2>3. Cryptography</h2>
+<p><strong>Cryptography</strong> is the science of secret writing.</p>
+<h3>3.1 Symmetric Key Cryptography</h3>
+<ul>
+<li><strong>Concept</strong>: Use the <strong>SAME key</strong> to lock (encrypt) and unlock (decrypt) the box.</li>
+<li><strong>Analogy</strong>: A house key. You give a copy to your friend. Both of you can lock and unlock the door.</li>
+<li><strong>Algorithms</strong>: DES (Old, broken), 3DES (Better), <strong>AES</strong> (Current standard, very strong).</li>
+<li><strong>Problem</strong>: How do you share the key securely in the first place?</li>
+</ul>
+<h3>3.2 Asymmetric Key Cryptography (Public Key)</h3>
+<ul>
+<li><strong>Concept</strong>: Use <strong>TWO keys</strong>. A <strong>Public Key</strong> (to lock) and a <strong>Private Key</strong> (to unlock).</li>
+<li><strong>Analogy</strong>: A mailbox. Anyone can put a letter in (Public Key), but only the postman with the key can take it out (Private Key).</li>
+<li><strong>Algorithms</strong>: <strong>RSA</strong>, Diffie-Hellman (for key exchange).</li>
+<li><strong>Benefit</strong>: Solves the key sharing problem.</li>
+</ul>
+<h3>3.3 Hash Functions</h3>
+<ul>
+<li><strong>Concept</strong>: A one-way fingerprint of data. You cannot get the data back from the hash.</li>
+<li><strong>Use</strong>: Checking Integrity. If even one bit of the file changes, the hash changes completely.</li>
+<li><strong>Algorithms</strong>: MD5 (Old), SHA-1, <strong>SHA-256</strong>.</li>
+</ul>
+<h3>3.4 Digital Signatures</h3>
+<ul>
+<li><strong>Goal</strong>: Prove authenticity and integrity.</li>
+<li><strong>Process</strong>:<ol>
+<li>Hash the message.</li>
+<li>Encrypt the hash with your <strong>Private Key</strong>.</li>
+<li>Receiver decrypts with your <strong>Public Key</strong> and compares the hash.</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2>4. Protocols</h2>
+<h3>4.1 IPSec (Internet Protocol Security)</h3>
+<ul>
+<li>Secures IP packets at the Network Layer. Used in VPNs.</li>
+<li><strong>Modes</strong>:<ul>
+<li><strong>Transport Mode</strong>: Encrypts only the payload (data).</li>
+<li><strong>Tunnel Mode</strong>: Encrypts the entire packet (header + data).</li>
+</ul>
+</li>
+<li><strong>Components</strong>: AH (Authentication Header) and ESP (Encapsulating Security Payload).</li>
+</ul>
+<h3>4.2 SSL/TLS (Secure Sockets Layer / Transport Layer Security)</h3>
+<ul>
+<li>Secures the Transport Layer (Web, Email). TLS is the modern version of SSL.</li>
+<li><strong>Handshake</strong>:<ol>
+<li>Client says "Hello, I support these algorithms."</li>
+<li>Server says "Hello, let's use this one. Here is my Certificate."</li>
+<li>Client verifies Certificate with a CA (Certificate Authority).</li>
+<li>They exchange keys and start encrypted communication.</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2>5. Infrastructure</h2>
+<h3>5.1 PKI (Public Key Infrastructure)</h3>
+<ul>
+<li>The system that manages Digital Certificates.</li>
+<li><strong>CA (Certificate Authority)</strong>: A trusted company (like Verisign or Let's Encrypt) that issues certificates. They vouch that "This Public Key belongs to Google.com".</li>
+</ul>
+<h3>5.2 Firewalls</h3>
+<ul>
+<li><strong>Gatekeeper</strong>: Sits between your network and the internet.</li>
+<li><strong>Packet Filtering</strong>: "Block all traffic on Port 80 except from this IP."</li>
+<li><strong>Stateful</strong>: "Only allow incoming traffic if it's a reply to an outgoing request."</li>
+</ul>
+<h3>5.3 VPN (Virtual Private Network)</h3>
+<ul>
+<li><strong>Tunnel</strong>: Creates a secure, encrypted tunnel over the public internet.</li>
+<li><strong>Use</strong>: Employees working from home can access the office network securely.</li>
+</ul>
+<hr />
+<h2>Unit VI Summary</h2>
+<ul>
+<li><strong>CIA Triad</strong>: Confidentiality, Integrity, Availability.</li>
+<li><strong>Symmetric</strong>: One key (Fast). <strong>Asymmetric</strong>: Two keys (Secure key exchange).</li>
+<li><strong>HTTPS</strong> uses <strong>TLS</strong> to secure the web.</li>
+<li><strong>Firewalls</strong> filter traffic; <strong>VPNs</strong> create secure tunnels.</li>
+</ul></div><hr><div class='section'><h1>Glossary of Key Terms</h1>
+<ul>
+<li><strong>ACK (Acknowledgment)</strong>: A signal passed between communicating processes to signify acknowledgment of receipt of response.</li>
+<li><strong>Address Resolution Protocol (ARP)</strong>: A protocol used to map an IP address to a physical machine address (MAC address).</li>
+<li><strong>Bandwidth</strong>: The maximum amount of data that can travel through a channel.</li>
+<li><strong>CIDR (Classless Inter-Domain Routing)</strong>: A method for allocating IP addresses and IP routing that replaces the previous classful IP addressing system.</li>
+<li><strong>DNS (Domain Name System)</strong>: The system that translates human-readable domain names (like google.com) into IP addresses.</li>
+<li><strong>Encryption</strong>: The process of converting information or data into a code, especially to prevent unauthorized access.</li>
+<li><strong>Firewall</strong>: A network security device that monitors and filters incoming and outgoing network traffic based on an organization's previously established security policies.</li>
+<li><strong>Gateway</strong>: A node (router) in a computer network, a key stopping point for data on its way to or from other networks.</li>
+<li><strong>HTTP (Hypertext Transfer Protocol)</strong>: The foundation of data communication for the World Wide Web.</li>
+<li><strong>IP (Internet Protocol)</strong>: The principal communications protocol in the Internet protocol suite for relaying datagrams across network boundaries.</li>
+<li><strong>MAC Address (Media Access Control Address)</strong>: A unique identifier assigned to a network interface controller (NIC) for use as a network address in communications within a network segment.</li>
+<li><strong>NAT (Network Address Translation)</strong>: A method of remapping one IP address space into another by modifying network address information in the IP header of packets while they are in transit.</li>
+<li><strong>Packet</strong>: A formatted unit of data carried by a packet-switched network.</li>
+<li><strong>Router</strong>: A device that forwards data packets between computer networks.</li>
+<li><strong>Subnet Mask</strong>: A 32-bit number that masks an IP address, and divides the IP address into network address and host address.</li>
+<li><strong>TCP (Transmission Control Protocol)</strong>: A standard that defines how to establish and maintain a network conversation through which application programs can exchange data.</li>
+<li><strong>UDP (User Datagram Protocol)</strong>: A communications protocol that is primarily used for establishing low-latency and loss-tolerating connections between applications on the internet.</li>
+<li><strong>VPN (Virtual Private Network)</strong>: A service that creates a safe, encrypted online connection.</li>
+</ul></div><hr>
+    </body>
+    </html>
+    
