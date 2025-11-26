@@ -1,0 +1,2978 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{xcolor}
+
+% Define colors
+\definecolor{unitcolor}{RGB}{0,102,204}
+\definecolor{conceptcolor}{RGB}{102,178,255}
+\definecolor{keycolor}{RGB}{255,153,51}
+\definecolor{examplecolor}{RGB}{153,204,153}
+
+% Custom boxes
+\newtcolorbox{keybox}[1]{
+  colback=keycolor!10,
+  colframe=keycolor,
+  fonttitle=\bfseries,
+  title=#1
+}
+
+\newtcolorbox{examplebox}[1]{
+  colback=examplecolor!10,
+  colframe=examplecolor!80!black,
+  fonttitle=\bfseries,
+  title=#1
+}
+
+\newtcolorbox{conceptbox}[1]{
+  colback=conceptcolor!10,
+  colframe=conceptcolor,
+  fonttitle=\bfseries,
+  title=#1
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Network Theory Study Guide}
+\fancyhead[R]{Units III-VI}
+\fancyfoot[C]{\thepage}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Network Theory Study Guide},
+    pdfpagemode=FullScreen,
+}
+
+\title{\textbf{\Huge Network Theory Study Guide}\\
+\Large Units III-VI: A Comprehensive Exam Preparation Guide}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This study guide provides a comprehensive overview of network theory concepts for undergraduate students preparing for examinations. Covering 28 hours of material across four units (Network Layer, Transport Layer, Application Layer, and Network Security), this guide assumes minimal prior knowledge and builds progressively from foundational concepts to advanced applications. Each unit includes clear explanations, real-world examples, diagrams, and key concept summaries.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% ============================================================================
+% UNIT III: NETWORK LAYER
+% ============================================================================
+
+\section{Unit III: Network Layer (7 Hours)}
+
+\subsection{Introduction to the Network Layer}
+
+\subsubsection{Prerequisites Review}
+
+Before diving into the Network Layer, let's review some foundational concepts:
+
+\begin{conceptbox}{Basic Networking Concepts}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Network}: A collection of interconnected devices that can communicate with each other
+    \item \textbf{Protocol}: A set of rules governing communication between devices
+    \item \textbf{Packet}: A unit of data transmitted over a network
+    \item \textbf{Binary and Hexadecimal}: Number systems used to represent addresses and data
+    \item \textbf{OSI Model}: A 7-layer conceptual framework (Physical, Data Link, Network, Transport, Session, Presentation, Application)
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{What is the Network Layer?}
+
+The Network Layer (Layer 3 of the OSI model) is responsible for \textbf{routing packets} from a source host to a destination host across multiple networks. Think of it as the postal service of the internet — it determines the best path for data to travel and ensures packets reach their intended destination.
+
+\begin{keybox}{Key Responsibilities}
+\begin{enumerate}
+    \item \textbf{Logical Addressing}: Assigning unique IP addresses to devices
+    \item \textbf{Routing}: Determining the best path for packets to travel
+    \item \textbf{Packet Forwarding}: Moving packets from input to output ports
+    \item \textbf{Fragmentation and Reassembly}: Breaking large packets into smaller pieces
+\end{enumerate}
+\end{keybox}
+
+\subsection{IPv4 Addressing}
+
+\subsubsection{IPv4 Structure and Notation}
+
+An IPv4 address is a \textbf{32-bit number} divided into 4 octets (8 bits each), typically written in \textbf{dotted-decimal notation}.
+
+\begin{examplebox}{IPv4 Address Example}
+Binary: \texttt{11000000.10101000.00000001.00000001}\\
+Decimal: \texttt{192.168.1.1}
+\end{examplebox}
+
+Each octet can range from 0 to 255 (since $2^8 = 256$ possible values).
+
+\subsubsection{Classful Addressing}
+
+Historically, IPv4 addresses were divided into five classes:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Class} & \textbf{First Octet} & \textbf{Network Bits} & \textbf{Host Bits} & \textbf{Default Mask} \\
+\hline
+A & 1-127 & 8 & 24 & 255.0.0.0 (/8) \\
+\hline
+B & 128-191 & 16 & 16 & 255.255.0.0 (/16) \\
+\hline
+C & 192-223 & 24 & 8 & 255.255.255.0 (/24) \\
+\hline
+D & 224-239 & \multicolumn{3}{c|}{Multicast} \\
+\hline
+E & 240-255 & \multicolumn{3}{c|}{Reserved/Experimental} \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}{Special Addresses}
+\begin{itemize}
+    \item \textbf{127.0.0.0/8}: Loopback addresses (127.0.0.1 = localhost)
+    \item \textbf{10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16}: Private addresses (RFC 1918)
+    \item \textbf{0.0.0.0}: Default route or "this network"
+    \item \textbf{255.255.255.255}: Broadcast address
+\end{itemize}
+\end{keybox}
+
+\subsubsection{Classless Addressing (CIDR)}
+
+\textbf{Classless Inter-Domain Routing (CIDR)} replaced classful addressing to allow more flexible address allocation. CIDR uses a \textbf{prefix length} (e.g., /24) to indicate how many bits are used for the network portion.
+
+\begin{examplebox}{CIDR Notation}
+\texttt{192.168.10.0/24} means:
+\begin{itemize}
+    \item 24 bits for network (192.168.10)
+    \item 8 bits for hosts (0-255)
+    \item Subnet mask: 255.255.255.0
+    \item Usable hosts: $2^8 - 2 = 254$ (excluding network and broadcast addresses)
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Subnetting}
+
+\textbf{Subnetting} divides a network into smaller sub-networks to improve management and security.
+
+\begin{conceptbox}{Subnetting Process}
+\begin{enumerate}
+    \item Determine the number of subnets needed
+    \item Calculate bits required: $2^n \geq \text{number of subnets}$
+    \item Borrow bits from the host portion
+    \item Calculate new subnet mask
+    \item Identify subnet ranges
+\end{enumerate}
+\end{conceptbox}
+
+\begin{examplebox}{Subnetting Example}
+Given: \texttt{192.168.1.0/24}, create 4 subnets\\
+
+\textbf{Solution:}
+\begin{itemize}
+    \item Bits needed: $2^2 = 4$ subnets, so borrow 2 bits
+    \item New mask: /26 (255.255.255.192)
+    \item Hosts per subnet: $2^6 - 2 = 62$
+    \item Subnets:
+    \begin{itemize}
+        \item Subnet 1: 192.168.1.0/26 (hosts: .1 to .62)
+        \item Subnet 2: 192.168.1.64/26 (hosts: .65 to .126)
+        \item Subnet 3: 192.168.1.128/26 (hosts: .129 to .190)
+        \item Subnet 4: 192.168.1.192/26 (hosts: .193 to .254)
+    \end{itemize}
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Variable Length Subnet Masking (VLSM)}
+
+\textbf{VLSM} allows subnets of different sizes within the same network, enabling more efficient address utilization.
+
+\begin{examplebox}{VLSM Example}
+Network: \texttt{192.168.1.0/24}\\
+Requirements: 100 hosts, 50 hosts, 25 hosts, 10 hosts\\
+
+\textbf{Solution:}
+\begin{itemize}
+    \item 100 hosts: Need $2^7 = 128$ addresses → /25 → 192.168.1.0/25
+    \item 50 hosts: Need $2^6 = 64$ addresses → /26 → 192.168.1.128/26
+    \item 25 hosts: Need $2^5 = 32$ addresses → /27 → 192.168.1.192/27
+    \item 10 hosts: Need $2^4 = 16$ addresses → /28 → 192.168.1.224/28
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Network Address Translation (NAT)}
+
+\textbf{NAT} allows multiple devices on a private network to share a single public IP address, conserving IPv4 addresses.
+
+\begin{conceptbox}{Types of NAT}
+\begin{itemize}
+    \item \textbf{Static NAT}: One-to-one mapping (one private IP → one public IP)
+    \item \textbf{Dynamic NAT}: Many-to-many mapping (pool of public IPs)
+    \item \textbf{PAT (Port Address Translation)}: Many-to-one using different ports
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{How NAT Works}
+\begin{enumerate}
+    \item Internal device (192.168.1.10:5000) sends packet to external server
+    \item NAT router replaces source IP with public IP (203.0.113.5:50000)
+    \item Server responds to 203.0.113.5:50000
+    \item NAT router translates back to 192.168.1.10:5000
+    \item Internal device receives response
+\end{enumerate}
+\end{examplebox}
+
+\subsection{IPv6 Addressing}
+
+\subsubsection{Why IPv6?}
+
+IPv4 provides only $2^{32} \approx 4.3$ billion addresses, which is insufficient for the growing number of internet-connected devices. IPv6 provides $2^{128}$ addresses — enough for every grain of sand on Earth to have billions of addresses!
+
+\subsubsection{IPv6 Address Format}
+
+IPv6 addresses are \textbf{128 bits} long, written as eight groups of four hexadecimal digits separated by colons.
+
+\begin{examplebox}{IPv6 Address Format}
+Full: \texttt{2001:0db8:85a3:0000:0000:8a2e:0370:7334}\\
+Shortened: \texttt{2001:db8:85a3::8a2e:370:7334}\\
+
+\textbf{Abbreviation Rules:}
+\begin{itemize}
+    \item Leading zeros in each group can be omitted
+    \item Consecutive groups of zeros can be replaced with \texttt{::} (once only)
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{IPv6 Address Types}
+
+\begin{center}
+\begin{tabular}{|l|l|p{6cm}|}
+\hline
+\textbf{Type} & \textbf{Prefix} & \textbf{Description} \\
+\hline
+Unicast & Various & One-to-one communication \\
+\hline
+Global Unicast & 2000::/3 & Internet-routable addresses \\
+\hline
+Link-Local & fe80::/10 & Communication on local link only \\
+\hline
+Unique Local & fc00::/7 & Private addresses (like RFC 1918) \\
+\hline
+Loopback & ::1/128 & Localhost (equivalent to 127.0.0.1) \\
+\hline
+Multicast & ff00::/8 & One-to-many communication \\
+\hline
+Anycast & (no specific) & One-to-nearest communication \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{IPv6 Header Structure}
+
+The IPv6 header is simpler and more efficient than IPv4:
+
+\begin{center}
+\begin{tabular}{|l|c|p{7cm}|}
+\hline
+\textbf{Field} & \textbf{Size} & \textbf{Purpose} \\
+\hline
+Version & 4 bits & IP version (6) \\
+\hline
+Traffic Class & 8 bits & Priority and QoS \\
+\hline
+Flow Label & 20 bits & Identify packet flows \\
+\hline
+Payload Length & 16 bits & Size of payload \\
+\hline
+Next Header & 8 bits & Type of next header (like protocol) \\
+\hline
+Hop Limit & 8 bits & TTL equivalent \\
+\hline
+Source Address & 128 bits & Source IPv6 address \\
+\hline
+Destination Address & 128 bits & Destination IPv6 address \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}{IPv6 Improvements}
+\begin{itemize}
+    \item Fixed 40-byte header (vs variable in IPv4)
+    \item No checksum (faster processing)
+    \item No fragmentation by routers (only by source)
+    \item Built-in security (IPSec)
+    \item Better support for mobile devices
+\end{itemize}
+\end{keybox}
+
+\subsubsection{IPv4 to IPv6 Transition Mechanisms}
+
+\begin{conceptbox}{Transition Strategies}
+\begin{itemize}
+    \item \textbf{Dual Stack}: Devices run both IPv4 and IPv6 simultaneously
+    \item \textbf{Tunneling}: IPv6 packets encapsulated in IPv4 packets
+    \item \textbf{Translation}: Convert between IPv4 and IPv6 (NAT64, DNS64)
+\end{itemize}
+\end{conceptbox}
+
+\subsection{Routing Fundamentals}
+
+\subsubsection{What is Routing?}
+
+\textbf{Routing} is the process of selecting paths in a network along which to send data packets. Routers use \textbf{routing tables} to make forwarding decisions.
+
+\begin{conceptbox}{Routing Table Components}
+\begin{itemize}
+    \item \textbf{Destination Network}: Target network address
+    \item \textbf{Next Hop}: IP address of next router
+    \item \textbf{Interface}: Outgoing network interface
+    \item \textbf{Metric}: Cost/distance to destination
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Static vs Dynamic Routing}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{5.5cm}|p{5.5cm}|}
+\hline
+\textbf{Aspect} & \textbf{Static Routing} & \textbf{Dynamic Routing} \\
+\hline
+Configuration & Manual & Automatic \\
+\hline
+Adaptability & No automatic updates & Adapts to topology changes \\
+\hline
+Overhead & Low & Higher (routing protocols) \\
+\hline
+Best For & Small networks & Large networks \\
+\hline
+Scalability & Poor & Good \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Distance Vector Routing}
+
+\subsubsection{Bellman-Ford Algorithm}
+
+Distance vector protocols use the \textbf{Bellman-Ford algorithm}, where each router:
+\begin{enumerate}
+    \item Maintains a distance table with costs to all destinations
+    \item Periodically shares its table with neighbors
+    \item Updates its table based on neighbors' information
+\end{enumerate}
+
+\begin{keybox}{Bellman-Ford Equation}
+\[
+D_x(y) = \min_v \{c(x,v) + D_v(y)\}
+\]
+Where:
+\begin{itemize}
+    \item $D_x(y)$ = distance from node x to node y
+    \item $c(x,v)$ = cost from x to neighbor v
+    \item $D_v(y)$ = distance from v to y
+\end{itemize}
+\end{keybox}
+
+\subsubsection{Routing Information Protocol (RIP)}
+
+\textbf{RIP} is a distance vector protocol that uses hop count as its metric.
+
+\begin{conceptbox}{RIP Characteristics}
+\begin{itemize}
+    \item Maximum hop count: 15 (16 = unreachable)
+    \item Updates every 30 seconds
+    \item Uses UDP port 520
+    \item Two versions: RIPv1 (classful) and RIPv2 (classless)
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Count-to-Infinity Problem}
+
+A major issue with distance vector routing where incorrect routing information circulates indefinitely.
+
+\begin{examplebox}{Count-to-Infinity Example}
+\begin{enumerate}
+    \item Network: A---B---C (each link cost = 1)
+    \item Link B-C fails
+    \item B hears from A that C is reachable (distance 2)
+    \item B updates: C reachable via A (distance 3)
+    \item A hears from B: C reachable (distance 3)
+    \item A updates: C reachable via B (distance 4)
+    \item This continues until reaching infinity...
+\end{enumerate}
+\end{examplebox}
+
+\begin{conceptbox}{Solutions to Count-to-Infinity}
+\begin{itemize}
+    \item \textbf{Split Horizon}: Don't advertise routes back to the source
+    \item \textbf{Route Poisoning}: Set failed routes to infinity (16 in RIP)
+    \item \textbf{Hold-Down Timers}: Wait before accepting new routes after failure
+    \item \textbf{Triggered Updates}: Send updates immediately on topology change
+\end{itemize}
+\end{conceptbox}
+
+\subsection{Link State Routing}
+
+\subsubsection{Dijkstra's Algorithm}
+
+Link state protocols use \textbf{Dijkstra's algorithm} to compute the shortest path tree.
+
+\begin{conceptbox}{Link State Process}
+\begin{enumerate}
+    \item Each router discovers its neighbors
+    \item Measures cost to each neighbor
+    \item Constructs Link State Advertisement (LSA)
+    \item Floods LSA to all routers
+    \item Each router builds complete network topology
+    \item Runs Dijkstra's algorithm to compute shortest paths
+\end{enumerate}
+\end{conceptbox}
+
+\begin{keybox}{Dijkstra's Algorithm Steps}
+\begin{enumerate}
+    \item Initialize: Set distance to source = 0, all others = $\infty$
+    \item Select unvisited node with smallest distance
+    \item For each neighbor, calculate: distance = current distance + edge cost
+    \item If new distance is smaller, update
+    \item Mark current node as visited
+    \item Repeat until all nodes visited
+\end{enumerate}
+\end{keybox}
+
+\begin{examplebox}{Dijkstra's Algorithm Example}
+Given network: A connected to B(2), C(4); B to C(1), D(7); C to D(3)\\
+
+\textbf{Finding shortest paths from A:}
+\begin{itemize}
+    \item Initial: A=0, B=$\infty$, C=$\infty$, D=$\infty$
+    \item Select A: Update B=2, C=4
+    \item Select B (distance 2): Update C=3 (2+1<4), D=9 (2+7)
+    \item Select C (distance 3): Update D=6 (3+3<9)
+    \item Select D (distance 6): Done
+    \item \textbf{Result:} A→B=2, A→C=3, A→D=6
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Open Shortest Path First (OSPF)}
+
+\textbf{OSPF} is a widely-used link state protocol.
+
+\begin{conceptbox}{OSPF Features}
+\begin{itemize}
+    \item Uses cost metric (typically based on bandwidth)
+    \item Supports hierarchical design (Areas)
+    \item Fast convergence
+    \item Supports VLSM and CIDR
+    \item Authentication support
+    \item Uses IP protocol 89
+\end{itemize}
+\end{conceptbox}
+
+\begin{keybox}{OSPF Areas}
+\begin{itemize}
+    \item \textbf{Area 0 (Backbone)}: All areas must connect to Area 0
+    \item \textbf{Regular Areas}: Standard OSPF areas
+    \item \textbf{Stub Areas}: Don't receive external routes
+    \item \textbf{Totally Stubby}: Only default route from ABR
+\end{itemize}
+\end{keybox}
+
+\subsubsection{LSA Flooding}
+
+\textbf{Link State Advertisements (LSAs)} are flooded throughout the network to ensure all routers have identical topology databases.
+
+\begin{conceptbox}{LSA Flooding Process}
+\begin{enumerate}
+    \item Router creates/updates LSA
+    \item Sends LSA to all neighbors
+    \item Each neighbor:
+    \begin{itemize}
+        \item Checks if LSA is newer (sequence number)
+        \item If newer, updates database and forwards to all other neighbors
+        \item If older, discards
+    \end{itemize}
+    \item Process continues until all routers have the LSA
+\end{enumerate}
+\end{conceptbox}
+
+\subsection{Network Layer Protocols}
+
+\subsubsection{Internet Protocol (IP)}
+
+IP is the primary network layer protocol responsible for packet delivery.
+
+\begin{center}
+\textbf{IPv4 Header (20-60 bytes)}
+\begin{tabular}{|l|c|p{7cm}|}
+\hline
+\textbf{Field} & \textbf{Size} & \textbf{Purpose} \\
+\hline
+Version & 4 bits & IP version (4) \\
+\hline
+IHL & 4 bits & Header length (in 32-bit words) \\
+\hline
+Type of Service & 8 bits & Priority/QoS \\
+\hline
+Total Length & 16 bits & Packet size (header + data) \\
+\hline
+Identification & 16 bits & Identifies fragments \\
+\hline
+Flags & 3 bits & Control fragmentation \\
+\hline
+Fragment Offset & 13 bits & Position in original packet \\
+\hline
+TTL & 8 bits & Time to Live (hop limit) \\
+\hline
+Protocol & 8 bits & Upper layer protocol (TCP=6, UDP=17) \\
+\hline
+Header Checksum & 16 bits & Error detection \\
+\hline
+Source Address & 32 bits & Source IP \\
+\hline
+Destination Address & 32 bits & Destination IP \\
+\hline
+Options & Variable & Rarely used \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Internet Control Message Protocol (ICMP)}
+
+\textbf{ICMP} is used for error reporting and diagnostic purposes.
+
+\begin{conceptbox}{Common ICMP Messages}
+\begin{itemize}
+    \item \textbf{Type 0}: Echo Reply (ping response)
+    \item \textbf{Type 3}: Destination Unreachable
+    \item \textbf{Type 5}: Redirect
+    \item \textbf{Type 8}: Echo Request (ping)
+    \item \textbf{Type 11}: Time Exceeded (traceroute)
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{ICMP in Action: Ping}
+When you ping a host:
+\begin{enumerate}
+    \item Your computer sends ICMP Echo Request (Type 8)
+    \item Target receives request
+    \item Target sends ICMP Echo Reply (Type 0)
+    \item Round-trip time is calculated
+\end{enumerate}
+\end{examplebox}
+
+\subsubsection{Address Resolution Protocol (ARP)}
+
+\textbf{ARP} maps IP addresses to MAC addresses on a local network.
+
+\begin{conceptbox}{ARP Process}
+\begin{enumerate}
+    \item Host A wants to send to IP address 192.168.1.10
+    \item A checks ARP cache for MAC address
+    \item If not found, A broadcasts ARP Request: "Who has 192.168.1.10?"
+    \item Host with 192.168.1.10 responds with ARP Reply containing its MAC
+    \item A caches the mapping and sends the packet
+\end{enumerate}
+\end{conceptbox}
+
+\subsubsection{Reverse ARP (RARP)}
+
+\textbf{RARP} maps MAC addresses to IP addresses (largely obsolete, replaced by DHCP).
+
+\subsubsection{Fragmentation and Reassembly}
+
+When packets exceed the \textbf{Maximum Transmission Unit (MTU)} of a link, they must be fragmented.
+
+\begin{conceptbox}{Fragmentation Process}
+\begin{itemize}
+    \item \textbf{MTU}: Maximum packet size for a network (typically 1500 bytes for Ethernet)
+    \item \textbf{Fragmentation}: Router breaks large packets into smaller fragments
+    \item \textbf{Identification Field}: All fragments have same ID
+    \item \textbf{Fragment Offset}: Indicates position in original packet
+    \item \textbf{More Fragments Flag}: 1 = more fragments coming, 0 = last fragment
+    \item \textbf{Reassembly}: Destination host reassembles fragments
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{Fragmentation Example}
+Original packet: 4000 bytes, MTU = 1500 bytes\\
+\begin{itemize}
+    \item Fragment 1: 1500 bytes (offset=0, MF=1)
+    \item Fragment 2: 1500 bytes (offset=1480, MF=1)
+    \item Fragment 3: 1020 bytes (offset=2960, MF=0)
+\end{itemize}
+Note: Offset measured in 8-byte units
+\end{examplebox}
+
+\subsection{Unit III Summary}
+
+\begin{keybox}{Key Concepts Checklist}
+\begin{itemize}
+    \item IPv4: 32-bit addresses, classful/classless, subnetting, VLSM, NAT
+    \item IPv6: 128-bit addresses, simplified header, transition mechanisms
+    \item Routing: Static vs dynamic, routing tables, packet forwarding
+    \item Distance Vector: Bellman-Ford, RIP, count-to-infinity solutions
+    \item Link State: Dijkstra's algorithm, OSPF, LSA flooding
+    \item Protocols: IP header, ICMP messages, ARP process, fragmentation
+\end{itemize}
+\end{keybox}
+
+\newpage
+
+% ============================================================================
+% UNIT IV: TRANSPORT LAYER
+% ============================================================================
+
+\section{Unit IV: Transport Layer (7 Hours)}
+
+\subsection{Introduction to the Transport Layer}
+
+\subsubsection{Prerequisites Review}
+
+Before studying the Transport Layer, ensure you understand:
+
+\begin{conceptbox}{Foundation Concepts}
+\begin{itemize}
+    \item \textbf{IP Addressing}: How devices are identified on networks
+    \item \textbf{Packets}: Units of data transmitted across networks
+    \item \textbf{End-to-End Communication}: Communication between source and destination hosts
+    \item \textbf{Reliability}: Ensuring data arrives correctly and completely
+    \item \textbf{Binary Operations}: AND, OR, XOR for checksum calculations
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Role of the Transport Layer}
+
+The Transport Layer (Layer 4) provides \textbf{logical communication between application processes} running on different hosts. Think of it as the layer that ensures your email arrives intact, your video streams smoothly, and your web pages load completely.
+
+\begin{keybox}{Transport Layer Responsibilities}
+\begin{enumerate}
+    \item \textbf{Process-to-Process Delivery}: Unlike the network layer (host-to-host), transport layer delivers to specific applications
+    \item \textbf{Segmentation}: Breaks application data into segments
+    \item \textbf{Multiplexing/Demultiplexing}: Manages multiple connections
+    \item \textbf{Error Detection}: Checksums to detect corrupted data
+    \item \textbf{Flow Control}: Prevents overwhelming the receiver
+    \item \textbf{Congestion Control}: Prevents overwhelming the network
+\end{enumerate}
+\end{keybox}
+
+\subsection{Transport Layer Services}
+
+\subsubsection{Process-to-Process Communication}
+
+While the network layer delivers packets between hosts, the transport layer delivers data between \textbf{processes} (applications) running on those hosts.
+
+\begin{examplebox}{Real-World Analogy}
+Think of houses (hosts) on a street:
+\begin{itemize}
+    \item \textbf{Network Layer}: Delivers mail to the correct house (IP address)
+    \item \textbf{Transport Layer}: Delivers to the correct person in the house (port number)
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Port Addressing}
+
+\textbf{Port numbers} identify specific processes/applications on a host.
+
+\begin{center}
+\begin{tabular}{|l|l|p{7cm}|}
+\hline
+\textbf{Range} & \textbf{Category} & \textbf{Description} \\
+\hline
+0-1023 & Well-Known Ports & Standard services (HTTP=80, HTTPS=443, SSH=22) \\
+\hline
+1024-49151 & Registered Ports & Application-specific (MySQL=3306, PostgreSQL=5432) \\
+\hline
+49152-65535 & Dynamic/Private & Temporary client ports \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}{Common Port Numbers}
+\begin{itemize}
+    \item HTTP: 80, HTTPS: 443
+    \item FTP: 20 (data), 21 (control)
+    \item SSH: 22, Telnet: 23
+    \item SMTP: 25, DNS: 53
+    \item POP3: 110, IMAP: 143
+\end{itemize}
+\end{keybox}
+
+\subsubsection{Sockets}
+
+A \textbf{socket} is the combination of an IP address and a port number, uniquely identifying a process on a network.
+
+\begin{examplebox}{Socket Example}
+\texttt{192.168.1.10:8080}
+\begin{itemize}
+    \item IP Address: 192.168.1.10
+    \item Port Number: 8080
+    \item Identifies: Web server process on that host
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Multiplexing and Demultiplexing}
+
+\begin{conceptbox}{Definitions}
+\begin{itemize}
+    \item \textbf{Multiplexing} (at sender): Gathering data from multiple sockets, encapsulating with headers, passing to network layer
+    \item \textbf{Demultiplexing} (at receiver): Delivering received segments to correct sockets based on port numbers
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{Multiplexing in Action}
+Your computer runs:
+\begin{itemize}
+    \item Web browser (port 50001) → Server (port 443)
+    \item Email client (port 50002) → Server (port 993)
+    \item Chat app (port 50003) → Server (port 5222)
+\end{itemize}
+Transport layer multiplexes all three, network layer sees single stream of packets.
+\end{examplebox}
+
+\subsubsection{Connection-Oriented vs Connectionless}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{5.5cm}|p{5.5cm}|}
+\hline
+\textbf{Aspect} & \textbf{Connection-Oriented (TCP)} & \textbf{Connectionless (UDP)} \\
+\hline
+Setup & Requires handshake & No setup \\
+\hline
+Reliability & Guaranteed delivery & Best effort \\
+\hline
+Order & Maintains order & No ordering \\
+\hline
+Speed & Slower (overhead) & Faster \\
+\hline
+Use Cases & Web, email, file transfer & Streaming, gaming, DNS \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{User Datagram Protocol (UDP)}
+
+\subsubsection{UDP Characteristics}
+
+UDP is a \textbf{simple, lightweight, connectionless} protocol.
+
+\begin{keybox}{UDP Features}
+\begin{itemize}
+    \item \textbf{No connection establishment}: Immediate data transmission
+    \item \textbf{No reliability}: No acknowledgments or retransmissions
+    \item \textbf{No flow control}: Sender can overwhelm receiver
+    \item \textbf{No congestion control}: Doesn't reduce rate during congestion
+    \item \textbf{Low overhead}: Only 8-byte header
+    \item \textbf{Fast}: Minimal processing
+\end{itemize}
+\end{keybox}
+
+\subsubsection{UDP Header Structure}
+
+\begin{center}
+\begin{tabular}{|l|c|p{8cm}|}
+\hline
+\textbf{Field} & \textbf{Size} & \textbf{Description} \\
+\hline
+Source Port & 16 bits & Port number of sender (optional) \\
+\hline
+Destination Port & 16 bits & Port number of receiver \\
+\hline
+Length & 16 bits & Length of UDP header + data (minimum 8) \\
+\hline
+Checksum & 16 bits & Error detection (optional in IPv4, mandatory in IPv6) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{UDP Checksum Calculation}
+
+The checksum detects errors in transmitted data.
+
+\begin{conceptbox}{Checksum Process}
+\begin{enumerate}
+    \item Create pseudo-header (source IP, dest IP, protocol, UDP length)
+    \item Divide data into 16-bit words
+    \item Add all words together (binary addition)
+    \item If overflow, wrap around and add to result
+    \item Take one's complement (flip all bits)
+    \item Result is checksum
+\end{enumerate}
+\end{conceptbox}
+
+\begin{examplebox}{Simple Checksum Example}
+Data words: 0x1234, 0x5678, 0x9ABC\\
+
+\textbf{Calculation:}
+\begin{align*}
+&\text{Sum: } 0x1234 + 0x5678 + 0x9ABC = 0x20768\\
+&\text{Wrap: } 0x0768 + 0x0002 = 0x076A\\
+&\text{Checksum: } \sim 0x076A = 0xF895
+\end{align*}
+\end{examplebox}
+
+\subsubsection{UDP Applications}
+
+\begin{conceptbox}{When to Use UDP}
+\begin{itemize}
+    \item \textbf{Streaming Media}: Some packet loss acceptable, real-time important
+    \item \textbf{Online Gaming}: Low latency critical, occasional loss tolerable
+    \item \textbf{DNS Queries}: Small, single-packet requests
+    \item \textbf{DHCP}: Simple request/response on local network
+    \item \textbf{VoIP}: Real-time communication, retransmission not useful
+    \item \textbf{TFTP}: Simple file transfer (implements own reliability)
+\end{itemize}
+\end{conceptbox}
+
+\subsection{Transmission Control Protocol (TCP)}
+
+\subsubsection{TCP Characteristics}
+
+TCP provides \textbf{reliable, ordered, connection-oriented} communication.
+
+\begin{keybox}{TCP Features}
+\begin{itemize}
+    \item \textbf{Connection-oriented}: Three-way handshake before data transfer
+    \item \textbf{Reliable}: Acknowledges received segments, retransmits lost ones
+    \item \textbf{Ordered}: Delivers data in correct sequence
+    \item \textbf{Flow control}: Sliding window mechanism
+    \item \textbf{Congestion control}: Adjusts sending rate based on network conditions
+    \item \textbf{Full-duplex}: Simultaneous two-way communication
+\end{itemize}
+\end{keybox}
+
+\subsubsection{TCP Header Structure}
+
+\begin{center}
+\begin{tabular}{|l|c|p{7cm}|}
+\hline
+\textbf{Field} & \textbf{Size} & \textbf{Description} \\
+\hline
+Source Port & 16 bits & Sender's port number \\
+\hline
+Destination Port & 16 bits & Receiver's port number \\
+\hline
+Sequence Number & 32 bits & Byte number of first byte in segment \\
+\hline
+Acknowledgment Number & 32 bits & Next byte expected from other side \\
+\hline
+Header Length & 4 bits & Length of TCP header (in 32-bit words) \\
+\hline
+Reserved & 6 bits & Reserved for future use \\
+\hline
+Flags & 6 bits & URG, ACK, PSH, RST, SYN, FIN \\
+\hline
+Window Size & 16 bits & Flow control: bytes receiver can accept \\
+\hline
+Checksum & 16 bits & Error detection (mandatory) \\
+\hline
+Urgent Pointer & 16 bits & Points to urgent data (if URG=1) \\
+\hline
+Options & Variable & MSS, window scaling, timestamps, etc. \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}{TCP Flags}
+\begin{itemize}
+    \item \textbf{SYN}: Synchronize, initiate connection
+    \item \textbf{ACK}: Acknowledgment field is valid
+    \item \textbf{FIN}: Finish, close connection
+    \item \textbf{RST}: Reset connection (error)
+    \item \textbf{PSH}: Push data to application immediately
+    \item \textbf{URG}: Urgent pointer field is valid
+\end{itemize}
+\end{keybox}
+
+\subsubsection{Three-Way Handshake (Connection Establishment)}
+
+TCP uses a three-way handshake to establish a connection.
+
+\begin{conceptbox}{Three-Way Handshake Steps}
+\begin{enumerate}
+    \item \textbf{Client → Server: SYN}
+    \begin{itemize}
+        \item Client sends SYN with initial sequence number (ISN)
+        \item Flags: SYN=1
+        \item Seq = X (random number)
+    \end{itemize}
+    \item \textbf{Server → Client: SYN-ACK}
+    \begin{itemize}
+        \item Server responds with SYN and ACK
+        \item Flags: SYN=1, ACK=1
+        \item Seq = Y, Ack = X+1
+    \end{itemize}
+    \item \textbf{Client → Server: ACK}
+    \begin{itemize}
+        \item Client acknowledges
+        \item Flags: ACK=1
+        \item Seq = X+1, Ack = Y+1
+    \end{itemize}
+\end{enumerate}
+Connection established, data transfer can begin!
+\end{conceptbox}
+
+\begin{examplebox}{Handshake Example}
+\begin{itemize}
+    \item Client: SYN, Seq=1000
+    \item Server: SYN-ACK, Seq=5000, Ack=1001
+    \item Client: ACK, Seq=1001, Ack=5001
+    \item Data transfer begins...
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Four-Way Termination (Connection Closure)}
+
+TCP uses a four-way process to gracefully close connections.
+
+\begin{conceptbox}{Four-Way Termination Steps}
+\begin{enumerate}
+    \item \textbf{Client → Server: FIN}
+    \begin{itemize}
+        \item Client initiates closure
+        \item Flags: FIN=1, ACK=1
+    \end{itemize}
+    \item \textbf{Server → Client: ACK}
+    \begin{itemize}
+        \item Server acknowledges FIN
+        \item Flags: ACK=1
+    \end{itemize}
+    \item \textbf{Server → Client: FIN}
+    \begin{itemize}
+        \item Server ready to close
+        \item Flags: FIN=1, ACK=1
+    \end{itemize}
+    \item \textbf{Client → Server: ACK}
+    \begin{itemize}
+        \item Client acknowledges
+        \item Flags: ACK=1
+    \end{itemize}
+\end{enumerate}
+Connection closed!
+\end{conceptbox}
+
+\subsubsection{Sequence and Acknowledgment Numbers}
+
+TCP uses sequence and acknowledgment numbers to ensure reliable, ordered delivery.
+
+\begin{conceptbox}{How They Work}
+\begin{itemize}
+    \item \textbf{Sequence Number}: Identifies the first byte of data in the segment
+    \item \textbf{Acknowledgment Number}: Specifies the next byte expected from the other side
+    \item \textbf{Cumulative ACK}: Acknowledges all bytes up to (but not including) the ACK number
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{Sequence Number Example}
+Client sends file to server:
+\begin{itemize}
+    \item Segment 1: Seq=1000, Length=500 (bytes 1000-1499)
+    \item Server ACK: Ack=1500 (expecting byte 1500 next)
+    \item Segment 2: Seq=1500, Length=300 (bytes 1500-1799)
+    \item Server ACK: Ack=1800
+\end{itemize}
+\end{examplebox}
+
+\subsection{Flow Control}
+
+\subsubsection{Purpose of Flow Control}
+
+Flow control prevents a fast sender from overwhelming a slow receiver.
+
+\begin{conceptbox}{Flow Control Mechanism}
+\begin{itemize}
+    \item Receiver advertises \textbf{receive window (rwnd)} in TCP header
+    \item Window size = buffer space available at receiver
+    \item Sender limits unacknowledged data to rwnd
+    \item Window grows as receiver processes data
+    \item Window shrinks as receiver's buffer fills
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Sliding Window Protocol}
+
+TCP uses a \textbf{sliding window} protocol for efficient flow control.
+
+\begin{keybox}{Sliding Window Concepts}
+\begin{itemize}
+    \item \textbf{Send Window}: Range of sequence numbers sender can transmit
+    \item \textbf{Receive Window}: Range receiver can accept
+    \item \textbf{Window Slides}: Advances as data is acknowledged
+    \item \textbf{Window Size}: Advertised by receiver, adjusts dynamically
+\end{itemize}
+\end{keybox}
+
+\begin{examplebox}{Sliding Window Example}
+Initial: Sender window = [1000-1999], Receiver window size = 1000 bytes
+\begin{enumerate}
+    \item Sender transmits bytes 1000-1499 (500 bytes)
+    \item Receiver ACKs 1500, window = 700 (processed 300 bytes)
+    \item Sender window = [1500-2199]
+    \item Sender can send 700 more bytes before waiting
+\end{enumerate}
+\end{examplebox}
+
+\subsubsection{Stop-and-Wait vs Pipelining}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{5.5cm}|p{5.5cm}|}
+\hline
+\textbf{Aspect} & \textbf{Stop-and-Wait} & \textbf{Pipelining (Sliding Window)} \\
+\hline
+Operation & Send one, wait for ACK & Send multiple without waiting \\
+\hline
+Efficiency & Low (idle time) & High (utilizes bandwidth) \\
+\hline
+Window Size & 1 segment & Multiple segments \\
+\hline
+Complexity & Simple & More complex \\
+\hline
+Use & Simple protocols & TCP, modern protocols \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Congestion Control}
+
+\subsubsection{What is Network Congestion?}
+
+\textbf{Congestion} occurs when network demand exceeds capacity, causing:
+\begin{itemize}
+    \item Increased queuing delays
+    \item Packet loss (buffer overflow)
+    \item Reduced throughput
+    \item Retransmissions (worsening congestion)
+\end{itemize}
+
+\begin{examplebox}{Congestion Analogy}
+Think of network congestion like traffic on a highway:
+\begin{itemize}
+    \item Normal traffic: Cars flow smoothly
+    \item Rush hour: Too many cars, traffic slows
+    \item Accidents: Complete standstill
+    \item TCP's job: Detect congestion and slow down
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{TCP Congestion Control Algorithms}
+
+TCP uses several algorithms to manage congestion:
+
+\begin{keybox}{Congestion Window (cwnd)}
+\begin{itemize}
+    \item Sender maintains congestion window (cwnd)
+    \item Effective window = $\min(\text{cwnd}, \text{rwnd})$
+    \item cwnd adjusted based on network conditions
+    \item Goal: Maximize throughput without causing congestion
+\end{itemize}
+\end{keybox}
+
+\subsubsection{Slow Start}
+
+Initially, TCP doesn't know the network capacity, so it starts slowly.
+
+\begin{conceptbox}{Slow Start Process}
+\begin{enumerate}
+    \item Initialize cwnd = 1 MSS (Maximum Segment Size)
+    \item For each ACK received, cwnd += 1 MSS
+    \item Result: cwnd doubles every RTT (exponential growth)
+    \item Continue until:
+    \begin{itemize}
+        \item Reach slow start threshold (ssthresh)
+        \item Packet loss detected
+    \end{itemize}
+\end{enumerate}
+\end{conceptbox}
+
+\begin{examplebox}{Slow Start Example}
+MSS = 1000 bytes, ssthresh = 16000
+\begin{itemize}
+    \item RTT 1: cwnd = 1000 (send 1 segment)
+    \item RTT 2: cwnd = 2000 (send 2 segments)
+    \item RTT 3: cwnd = 4000 (send 4 segments)
+    \item RTT 4: cwnd = 8000 (send 8 segments)
+    \item RTT 5: cwnd = 16000 (reach ssthresh, switch to congestion avoidance)
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Congestion Avoidance}
+
+After slow start, TCP enters \textbf{congestion avoidance} mode.
+
+\begin{conceptbox}{Congestion Avoidance Process}
+\begin{enumerate}
+    \item For each RTT, cwnd += 1 MSS
+    \item Result: Linear growth (additive increase)
+    \item Continue until packet loss detected
+    \item On loss:
+    \begin{itemize}
+        \item ssthresh = cwnd / 2
+        \item cwnd = 1 MSS (or ssthresh, depending on loss type)
+        \item Return to slow start or fast recovery
+    \end{itemize}
+\end{enumerate}
+\end{conceptbox}
+
+\subsubsection{Fast Retransmit}
+
+\textbf{Fast retransmit} quickly detects packet loss without waiting for timeout.
+
+\begin{conceptbox}{Fast Retransmit Mechanism}
+\begin{enumerate}
+    \item Receiver sends duplicate ACK when out-of-order segment arrives
+    \item Sender receives 3 duplicate ACKs (4 identical ACKs total)
+    \item Interprets as packet loss
+    \item Immediately retransmits missing segment
+    \item Faster than waiting for timeout
+\end{enumerate}
+\end{conceptbox}
+
+\begin{examplebox}{Fast Retransmit Example}
+\begin{itemize}
+    \item Sender: Segments 1, 2, 3, 4, 5 (segment 2 lost)
+    \item Receiver: Gets 1, ACKs for 2
+    \item Receiver: Gets 3, sends duplicate ACK for 2
+    \item Receiver: Gets 4, sends duplicate ACK for 2
+    \item Receiver: Gets 5, sends duplicate ACK for 2
+    \item Sender: Receives 3 duplicate ACKs, retransmits segment 2
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Fast Recovery}
+
+\textbf{Fast recovery} avoids slow start after fast retransmit.
+
+\begin{conceptbox}{Fast Recovery Process}
+\begin{enumerate}
+    \item On 3 duplicate ACKs:
+    \begin{itemize}
+        \item ssthresh = cwnd / 2
+        \item cwnd = ssthresh + 3 MSS
+        \item Retransmit missing segment
+    \end{itemize}
+    \item For each additional duplicate ACK:
+    \begin{itemize}
+        \item cwnd += 1 MSS
+    \end{itemize}
+    \item When new ACK arrives:
+    \begin{itemize}
+        \item cwnd = ssthresh
+        \item Enter congestion avoidance
+    \end{itemize}
+\end{enumerate}
+\end{conceptbox}
+
+\subsubsection{AIMD (Additive Increase Multiplicative Decrease)}
+
+TCP's congestion control follows the \textbf{AIMD} principle:
+
+\begin{keybox}{AIMD Strategy}
+\begin{itemize}
+    \item \textbf{Additive Increase}: Increase cwnd linearly (add 1 MSS per RTT)
+    \item \textbf{Multiplicative Decrease}: Decrease cwnd exponentially (divide by 2 on loss)
+    \item \textbf{Result}: "Sawtooth" pattern converging to fair share
+    \item \textbf{Fairness}: Multiple flows converge to equal bandwidth
+\end{itemize}
+\end{keybox}
+
+\subsection{Reliability Mechanisms}
+
+\subsubsection{Error Detection}
+
+TCP uses checksums to detect errors in transmitted data.
+
+\begin{conceptbox}{TCP Checksum}
+\begin{itemize}
+    \item Computed over pseudo-header, TCP header, and data
+    \item Pseudo-header includes source/dest IP, protocol, TCP length
+    \item Same algorithm as UDP, but mandatory
+    \item If checksum fails, segment is discarded
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Retransmission Strategies}
+
+TCP retransmits segments when:
+
+\begin{conceptbox}{Retransmission Triggers}
+\begin{itemize}
+    \item \textbf{Timeout}: RTO (Retransmission Timeout) expires
+    \item \textbf{Fast Retransmit}: 3 duplicate ACKs received
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Timeout Mechanisms}
+
+TCP must set appropriate timeout values — too short causes unnecessary retransmissions, too long causes delays.
+
+\begin{conceptbox}{RTO Calculation}
+TCP estimates Round-Trip Time (RTT) and sets RTO accordingly:
+\begin{align*}
+\text{EstimatedRTT} &= (1-\alpha) \times \text{EstimatedRTT} + \alpha \times \text{SampleRTT}\\
+\text{DevRTT} &= (1-\beta) \times \text{DevRTT} + \beta \times |\text{SampleRTT} - \text{EstimatedRTT}|\\
+\text{RTO} &= \text{EstimatedRTT} + 4 \times \text{DevRTT}
+\end{align*}
+Typical values: $\alpha = 0.125$, $\beta = 0.25$
+\end{conceptbox}
+
+\begin{examplebox}{RTO Example}
+\begin{itemize}
+    \item Initial EstimatedRTT = 100ms, DevRTT = 10ms
+    \item SampleRTT = 120ms
+    \item New EstimatedRTT = 0.875 × 100 + 0.125 × 120 = 102.5ms
+    \item New DevRTT = 0.75 × 10 + 0.25 × |120-102.5| = 11.875ms
+    \item RTO = 102.5 + 4 × 11.875 = 150ms
+\end{itemize}
+\end{examplebox}
+
+\subsection{Unit IV Summary}
+
+\begin{keybox}{Key Concepts Checklist}
+\begin{itemize}
+    \item Transport layer provides process-to-process communication
+    \item Port numbers identify applications, sockets = IP + port
+    \item Multiplexing/demultiplexing manages multiple connections
+    \item UDP: Simple, fast, unreliable, 8-byte header
+    \item TCP: Reliable, ordered, connection-oriented, complex header
+    \item Three-way handshake establishes connections
+    \item Four-way termination closes connections
+    \item Flow control: Sliding window prevents receiver overflow
+    \item Congestion control: Slow start, congestion avoidance, fast retransmit/recovery
+    \item AIMD: Additive increase, multiplicative decrease
+    \item Reliability: Checksums, retransmissions, adaptive timeouts
+\end{itemize}
+\end{keybox}
+
+\newpage
+
+% ============================================================================
+% UNIT V: APPLICATION LAYER
+% ============================================================================
+
+\section{Unit V: Application Layer (7 Hours)}
+
+\subsection{Introduction to the Application Layer}
+
+\subsubsection{Prerequisites Review}
+
+Before exploring Application Layer protocols, review:
+
+\begin{conceptbox}{Foundation Concepts}
+\begin{itemize}
+    \item \textbf{Client-Server Model}: Client requests, server responds
+    \item \textbf{TCP/UDP}: Transport protocols providing different services
+    \item \textbf{Port Numbers}: How applications are addressed
+    \item \textbf{DNS Resolution}: Converting domain names to IP addresses
+    \item \textbf{Text Encoding}: ASCII, Unicode for representing text
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Role of the Application Layer}
+
+The Application Layer (Layer 7) is where \textbf{network applications and their protocols} reside. It provides services directly to users and applications.
+
+\begin{keybox}{Application Layer Characteristics}
+\begin{itemize}
+    \item Closest to end users
+    \item Implements specific application protocols
+    \item Uses transport layer services (TCP/UDP)
+    \item Examples: Web browsers, email clients, file transfer
+\end{itemize}
+\end{keybox}
+
+\subsection{Domain Name System (DNS)}
+
+\subsubsection{What is DNS?}
+
+\textbf{DNS} is the Internet's phone book — it translates human-readable domain names (like \texttt{www.example.com}) into IP addresses (like \texttt{93.184.216.34}).
+
+\begin{examplebox}{Why DNS Matters}
+Without DNS, you'd need to remember:
+\begin{itemize}
+    \item Google: 142.250.185.46
+    \item Facebook: 157.240.241.35
+    \item Amazon: 205.251.242.103
+\end{itemize}
+With DNS, you just remember: google.com, facebook.com, amazon.com
+\end{examplebox}
+
+\subsubsection{DNS Hierarchy}
+
+DNS uses a hierarchical structure:
+
+\begin{conceptbox}{DNS Hierarchy Levels}
+\begin{enumerate}
+    \item \textbf{Root Level (.)}
+    \begin{itemize}
+        \item 13 root server clusters worldwide
+        \item Top of DNS hierarchy
+    \end{itemize}
+    \item \textbf{Top-Level Domain (TLD)}
+    \begin{itemize}
+        \item Generic: .com, .org, .net, .edu
+        \item Country-code: .uk, .de, .jp, .us
+    \end{itemize}
+    \item \textbf{Second-Level Domain}
+    \begin{itemize}
+        \item Organization's domain: example.com, google.com
+    \end{itemize}
+    \item \textbf{Subdomain}
+    \begin{itemize}
+        \item Further divisions: www.example.com, mail.example.com
+    \end{itemize}
+\end{enumerate}
+\end{conceptbox}
+
+\subsubsection{DNS Architecture}
+
+\begin{conceptbox}{DNS Components}
+\begin{itemize}
+    \item \textbf{DNS Resolver (Recursive Resolver)}: Client-side, queries on behalf of applications
+    \item \textbf{Root Name Servers}: Direct queries to TLD servers
+    \item \textbf{TLD Name Servers}: Direct queries to authoritative servers
+    \item \textbf{Authoritative Name Servers}: Provide definitive answers for domains
+    \item \textbf{Caching}: Stores results temporarily to reduce queries
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{DNS Query Types}
+
+\begin{center}
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Type} & \textbf{Description} \\
+\hline
+Recursive & Resolver fully resolves the query, returning final answer to client \\
+\hline
+Iterative & Server returns best answer it knows or referral to another server \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{DNS Record Types}
+
+\begin{center}
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Record} & \textbf{Purpose} \\
+\hline
+A & Maps hostname to IPv4 address \\
+\hline
+AAAA & Maps hostname to IPv6 address \\
+\hline
+CNAME & Canonical name (alias) for another hostname \\
+\hline
+MX & Mail exchange server for domain (includes priority) \\
+\hline
+NS & Name server responsible for domain \\
+\hline
+PTR & Pointer record for reverse DNS lookup (IP to hostname) \\
+\hline
+SOA & Start of Authority, domain metadata \\
+\hline
+TXT & Arbitrary text, often for verification/SPF \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{examplebox}{DNS Record Examples}
+\begin{verbatim}
+example.com.        A       93.184.216.34
+www.example.com.    CNAME   example.com.
+example.com.        MX  10  mail.example.com.
+example.com.        NS      ns1.example.com.
+example.com.        AAAA    2606:2800:220:1:248:1893:25c8:1946
+\end{verbatim}
+\end{examplebox}
+
+\subsubsection{DNS Resolution Process}
+
+\begin{conceptbox}{Complete Resolution Example: www.example.com}
+\begin{enumerate}
+    \item User enters \texttt{www.example.com} in browser
+    \item Browser checks local cache → not found
+    \item Query sent to DNS resolver (typically ISP's)
+    \item Resolver checks cache → not found
+    \item \textbf{Resolver → Root Server:} "Where is .com?"
+    \item \textbf{Root → Resolver:} "Ask TLD server at 192.5.6.30"
+    \item \textbf{Resolver → TLD Server:} "Where is example.com?"
+    \item \textbf{TLD → Resolver:} "Ask authoritative server at 93.184.216.119"
+    \item \textbf{Resolver → Authoritative:} "What's IP for www.example.com?"
+    \item \textbf{Authoritative → Resolver:} "93.184.216.34"
+    \item Resolver caches result, returns to browser
+    \item Browser caches result, connects to 93.184.216.34
+\end{enumerate}
+\end{conceptbox}
+
+\subsection{Hypertext Transfer Protocol (HTTP/HTTPS)}
+
+\subsubsection{What is HTTP?}
+
+\textbf{HTTP} (Hypertext Transfer Protocol) is the foundation of data communication on the World Wide Web.
+
+\begin{keybox}{HTTP Characteristics}
+\begin{itemize}
+    \item \textbf{Application layer protocol}
+    \item \textbf{Client-server model}: Browser (client) requests, web server responds
+    \item \textbf{Stateless}: Each request independent (no memory of previous)
+    \item \textbf{Uses TCP}: Port 80 (HTTP), port 443 (HTTPS)
+    \item \textbf{Text-based}: Human-readable format
+\end{itemize}
+\end{keybox}
+
+\subsubsection{HTTP Methods}
+
+\begin{center}
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Method} & \textbf{Purpose} \\
+\hline
+GET & Retrieve resource, no side effects (idempotent) \\
+\hline
+POST & Submit data, may create resource or cause side effects \\
+\hline
+PUT & Create or replace resource at specific URI (idempotent) \\
+\hline
+DELETE & Remove specified resource (idempotent) \\
+\hline
+HEAD & Like GET but only retrieve headers, not body \\
+\hline
+PATCH & Partially modify resource \\
+\hline
+OPTIONS & Describe communication options for target \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{examplebox}{HTTP Method Usage}
+\begin{itemize}
+    \item \textbf{GET /index.html}: Retrieve homepage
+    \item \textbf{POST /login}: Submit login credentials
+    \item \textbf{PUT /users/123}: Update user 123's information
+    \item \textbf{DELETE /posts/456}: Delete post 456
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{HTTP Request Structure}
+
+\begin{conceptbox}{HTTP Request Format}
+\begin{verbatim}
+METHOD URI HTTP/VERSION
+Header-Name: Header-Value
+Header-Name: Header-Value
+[blank line]
+[optional message body]
+\end{verbatim}
+\end{conceptbox}
+
+\begin{examplebox}{Sample HTTP Request}
+\begin{verbatim}
+GET /index.html HTTP/1.1
+Host: www.example.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+Accept: text/html,application/xhtml+xml
+Accept-Language: en-US,en;q=0.9
+Connection: keep-alive
+\end{verbatim}
+\end{examplebox}
+
+\subsubsection{HTTP Response Structure}
+
+\begin{conceptbox}{HTTP Response Format}
+\begin{verbatim}
+HTTP/VERSION STATUS-CODE REASON-PHRASE
+Header-Name: Header-Value
+Header-Name: Header-Value
+[blank line]
+[message body]
+\end{verbatim}
+\end{conceptbox}
+
+\begin{examplebox}{Sample HTTP Response}
+\begin{verbatim}
+HTTP/1.1 200 OK
+Date: Mon, 01 Jan 2024 12:00:00 GMT
+Server: Apache/2.4.41
+Content-Type: text/html; charset=UTF-8
+Content-Length: 1234
+Connection: keep-alive
+
+<!DOCTYPE html>
+<html>
+<head><title>Example</title></head>
+<body><h1>Hello World!</h1></body>
+</html>
+\end{verbatim}
+\end{examplebox}
+
+\subsubsection{HTTP Status Codes}
+
+\begin{center}
+\begin{tabular}{|l|l|p{6cm}|}
+\hline
+\textbf{Code} & \textbf{Category} & \textbf{Common Examples} \\
+\hline
+1xx & Informational & 100 Continue \\
+\hline
+2xx & Success & 200 OK, 201 Created, 204 No Content \\
+\hline
+3xx & Redirection & 301 Moved Permanently, 302 Found, 304 Not Modified \\
+\hline
+4xx & Client Error & 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found \\
+\hline
+5xx & Server Error & 500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}{Important Status Codes}
+\begin{itemize}
+    \item \textbf{200 OK}: Request succeeded
+    \item \textbf{301 Moved Permanently}: Resource permanently moved, update bookmarks
+    \item \textbf{304 Not Modified}: Cached version is still valid
+    \item \textbf{400 Bad Request}: Malformed request syntax
+    \item \textbf{401 Unauthorized}: Authentication required
+    \item \textbf{403 Forbidden}: Server refuses to fulfill request
+    \item \textbf{404 Not Found}: Resource doesn't exist
+    \item \textbf{500 Internal Server Error}: Server encountered unexpected condition
+    \item \textbf{503 Service Unavailable}: Server temporarily unable to handle request
+\end{itemize}
+\end{keybox}
+
+\subsubsection{HTTP Versions}
+
+\begin{conceptbox}{HTTP/1.0}
+\begin{itemize}
+    \item One request per TCP connection
+    \item Simple but inefficient (connection overhead)
+    \item Released 1996
+\end{itemize}
+\end{conceptbox}
+
+\begin{conceptbox}{HTTP/1.1}
+\begin{itemize}
+    \item Persistent connections (keep-alive)
+    \item Pipelining (multiple requests without waiting)
+    \item Chunked transfer encoding
+    \item Additional caching mechanisms
+    \item Host header (required)
+    \item Released 1997, still widely used
+\end{itemize}
+\end{conceptbox}
+
+\begin{conceptbox}{HTTP/2.0}
+\begin{itemize}
+    \item Binary protocol (not text)
+    \item Multiplexing (multiple requests/responses simultaneously)
+    \item Server push (proactively send resources)
+    \item Header compression (HPACK)
+    \item Stream prioritization
+    \item Released 2015, increasingly adopted
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{HTTPS and TLS/SSL}
+
+\textbf{HTTPS} = HTTP + TLS/SSL encryption
+
+\begin{keybox}{HTTPS Benefits}
+\begin{itemize}
+    \item \textbf{Confidentiality}: Data encrypted, prevents eavesdropping
+    \item \textbf{Integrity}: Detects tampering
+    \item \textbf{Authentication}: Verifies server identity (certificates)
+    \item \textbf{Port}: 443 (vs 80 for HTTP)
+\end{itemize}
+\end{keybox}
+
+\begin{conceptbox}{TLS/SSL Handshake (Simplified)}
+\begin{enumerate}
+    \item Client sends "ClientHello" (supported cipher suites, TLS version)
+    \item Server sends "ServerHello" (selected cipher, certificate)
+    \item Client verifies certificate (signed by trusted CA)
+    \item Key exchange (using public key cryptography)
+    \item Both derive session keys
+    \item Secure communication begins
+\end{enumerate}
+\end{conceptbox}
+
+\subsection{Email Protocols}
+
+\subsubsection{Email System Architecture}
+
+Email involves multiple components and protocols:
+
+\begin{conceptbox}{Email Components}
+\begin{itemize}
+    \item \textbf{User Agent}: Email client (Outlook, Gmail, Thunderbird)
+    \item \textbf{Mail Server}: Stores and forwards messages
+    \item \textbf{Mailbox}: User's received messages
+    \item \textbf{Message Queue}: Outgoing messages waiting to be sent
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Simple Mail Transfer Protocol (SMTP)}
+
+\textbf{SMTP} is used to \textbf{send} email from client to server and between servers.
+
+\begin{keybox}{SMTP Characteristics}
+\begin{itemize}
+    \item Uses TCP, port 25 (or 587 for submission)
+    \item Text-based protocol
+    \item Push protocol (sender initiates)
+    \item Three phases: handshake, message transfer, closure
+    \item Supports only 7-bit ASCII (MIME extends this)
+\end{itemize}
+\end{keybox}
+
+\begin{examplebox}{SMTP Session Example}
+\begin{verbatim}
+S: 220 mail.example.com SMTP Service Ready
+C: HELO client.example.com
+S: 250 mail.example.com
+C: MAIL FROM:<alice@example.com>
+S: 250 OK
+C: RCPT TO:<bob@example.org>
+S: 250 OK
+C: DATA
+S: 354 Start mail input; end with <CRLF>.<CRLF>
+C: Subject: Test Message
+C: 
+C: This is a test email.
+C: .
+S: 250 OK Message accepted
+C: QUIT
+S: 221 Closing connection
+\end{verbatim}
+\end{examplebox}
+
+\subsubsection{Post Office Protocol 3 (POP3)}
+
+\textbf{POP3} is used to \textbf{retrieve} email from a server.
+
+\begin{keybox}{POP3 Characteristics}
+\begin{itemize}
+    \item Uses TCP, port 110 (or 995 for POP3S)
+    \item Pull protocol (client requests)
+    \item Three phases: authorization, transaction, update
+    \item Downloads messages to client
+    \item Typically deletes from server (can be configured to keep)
+    \item Stateful protocol
+\end{itemize}
+\end{keybox}
+
+\begin{conceptbox}{POP3 Phases}
+\begin{enumerate}
+    \item \textbf{Authorization}: Login with username/password
+    \item \textbf{Transaction}: Retrieve, mark for deletion
+    \item \textbf{Update}: Actually delete marked messages (on QUIT)
+\end{enumerate}
+\end{conceptbox}
+
+\begin{examplebox}{POP3 Session Example}
+\begin{verbatim}
+S: +OK POP3 server ready
+C: USER alice
+S: +OK
+C: PASS secret123
+S: +OK Logged in
+C: LIST
+S: +OK 2 messages (320 octets)
+S: 1 120
+S: 2 200
+S: .
+C: RETR 1
+S: +OK 120 octets
+S: [message content]
+S: .
+C: DELE 1
+S: +OK Message 1 deleted
+C: QUIT
+S: +OK Goodbye
+\end{verbatim}
+\end{examplebox}
+
+\subsubsection{Internet Message Access Protocol (IMAP)}
+
+\textbf{IMAP} provides more advanced email retrieval than POP3.
+
+\begin{keybox}{IMAP Advantages over POP3}
+\begin{itemize}
+    \item Messages kept on server (access from multiple devices)
+    \item Server-side folder management
+    \item Selective download (headers only, search before download)
+    \item Multiple mailbox support
+    \item Flags (read/unread, starred, etc.)
+    \item Port 143 (or 993 for IMAPS)
+\end{itemize}
+\end{keybox}
+
+\begin{conceptbox}{IMAP Features}
+\begin{itemize}
+    \item Create, delete, rename mailboxes
+    \item Search messages on server
+    \item Partial fetch (e.g., just headers)
+    \item Message flags and status
+    \item Server-side filtering
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Multipurpose Internet Mail Extensions (MIME)}
+
+\textbf{MIME} extends email to support:
+
+\begin{keybox}{MIME Capabilities}
+\begin{itemize}
+    \item Non-ASCII text (UTF-8, other character sets)
+    \item Binary attachments (images, documents, audio, video)
+    \item Multiple parts (text + HTML + attachments)
+    \item Rich formatting
+\end{itemize}
+\end{keybox}
+
+\begin{conceptbox}{MIME Headers}
+\begin{itemize}
+    \item \textbf{MIME-Version}: Typically 1.0
+    \item \textbf{Content-Type}: text/plain, text/html, image/jpeg, multipart/mixed
+    \item \textbf{Content-Transfer-Encoding}: base64, quoted-printable, 7bit, 8bit
+    \item \textbf{Content-Disposition}: inline or attachment
+\end{itemize}
+\end{conceptbox}
+
+\subsection{File Transfer Protocol (FTP)}
+
+\subsubsection{FTP Overview}
+
+\textbf{FTP} is a protocol for transferring files between client and server.
+
+\begin{keybox}{FTP Characteristics}
+\begin{itemize}
+    \item Uses TCP
+    \item Two connections: control (port 21) and data (port 20 or dynamic)
+    \item Stateful (maintains session information)
+    \item Supports authentication
+    \item Text-based commands
+\end{itemize}
+\end{keybox}
+
+\subsubsection{FTP Architecture}
+
+FTP uses \textbf{two separate connections}:
+
+\begin{conceptbox}{FTP Connections}
+\begin{itemize}
+    \item \textbf{Control Connection (Port 21)}:
+    \begin{itemize}
+        \item Persistent throughout session
+        \item Carries commands and responses
+        \item Example commands: USER, PASS, LIST, RETR, STOR
+    \end{itemize}
+    \item \textbf{Data Connection}:
+    \begin{itemize}
+        \item Opened when transferring files or directory listings
+        \item Closed after transfer completes
+        \item Separate from control connection
+    \end{itemize}
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Active vs Passive Mode}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{5.5cm}|p{5.5cm}|}
+\hline
+\textbf{Aspect} & \textbf{Active Mode} & \textbf{Passive Mode} \\
+\hline
+Initiation & Server initiates data connection to client & Client initiates data connection to server \\
+\hline
+Firewall Issues & Client firewall may block incoming & Server specifies port, client connects \\
+\hline
+Data Port & Server uses port 20 & Server uses random high port \\
+\hline
+Use Case & Traditional, less common today & Modern standard, firewall-friendly \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{examplebox}{Active Mode}
+\begin{enumerate}
+    \item Client connects to server port 21 (control)
+    \item Client sends PORT command with its IP:port
+    \item Server initiates connection to client's specified port (data)
+    \item Data transfer occurs
+\end{enumerate}
+\end{examplebox}
+
+\begin{examplebox}{Passive Mode}
+\begin{enumerate}
+    \item Client connects to server port 21 (control)
+    \item Client sends PASV command
+    \item Server responds with IP:port to connect to
+    \item Client initiates connection to server's specified port (data)
+    \item Data transfer occurs
+\end{enumerate}
+\end{examplebox}
+
+\subsubsection{FTP Commands and Responses}
+
+\begin{center}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\textbf{Command} & \textbf{Description} \\
+\hline
+USER & Specify username \\
+\hline
+PASS & Specify password \\
+\hline
+LIST & List directory contents \\
+\hline
+RETR & Retrieve (download) file \\
+\hline
+STOR & Store (upload) file \\
+\hline
+CWD & Change working directory \\
+\hline
+PWD & Print working directory \\
+\hline
+MKD & Make directory \\
+\hline
+DELE & Delete file \\
+\hline
+QUIT & Close connection \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{keybox}{FTP Response Codes}
+\begin{itemize}
+    \item \textbf{1xx}: Positive preliminary reply
+    \item \textbf{2xx}: Positive completion reply (e.g., 226 Transfer complete)
+    \item \textbf{3xx}: Positive intermediate reply (e.g., 331 Password required)
+    \item \textbf{4xx}: Transient negative reply
+    \item \textbf{5xx}: Permanent negative reply (e.g., 530 Login incorrect)
+\end{itemize}
+\end{keybox}
+
+\subsection{Other Application Layer Protocols}
+
+\subsubsection{Dynamic Host Configuration Protocol (DHCP)}
+
+\textbf{DHCP} automatically assigns IP addresses to devices on a network.
+
+\begin{conceptbox}{DHCP Process (DORA)}
+\begin{enumerate}
+    \item \textbf{Discover}: Client broadcasts "I need an IP address"
+    \item \textbf{Offer}: DHCP server responds with available IP
+    \item \textbf{Request}: Client requests offered IP
+    \item \textbf{Acknowledge}: Server confirms, provides IP and configuration
+\end{enumerate}
+\end{conceptbox}
+
+\begin{keybox}{DHCP Provides}
+\begin{itemize}
+    \item IP address
+    \item Subnet mask
+    \item Default gateway
+    \item DNS server addresses
+    \item Lease time (how long IP is valid)
+\end{itemize}
+\end{keybox}
+
+\subsubsection{Telnet}
+
+\textbf{Telnet} provides remote command-line access to devices.
+
+\begin{conceptbox}{Telnet Characteristics}
+\begin{itemize}
+    \item Uses TCP, port 23
+    \item Unencrypted (major security risk)
+    \item Text-based, interactive
+    \item Largely replaced by SSH
+    \item Still used for testing other protocols
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Secure Shell (SSH)}
+
+\textbf{SSH} provides secure remote access, replacing Telnet.
+
+\begin{keybox}{SSH Advantages}
+\begin{itemize}
+    \item Encrypted communication
+    \item Strong authentication (password, keys)
+    \item Port forwarding (tunneling)
+    \item Secure file transfer (SCP, SFTP)
+    \item Port 22
+\end{itemize}
+\end{keybox}
+
+\subsubsection{Simple Network Management Protocol (SNMP)}
+
+\textbf{SNMP} is used for managing and monitoring network devices.
+
+\begin{conceptbox}{SNMP Components}
+\begin{itemize}
+    \item \textbf{Manager}: Monitoring system that collects data
+    \item \textbf{Agent}: Software on managed device
+    \item \textbf{MIB (Management Information Base)}: Database of manageable objects
+    \item \textbf{Operations}: GET, SET, TRAP (notification)
+\end{itemize}
+\end{conceptbox}
+
+\begin{keybox}{SNMP Versions}
+\begin{itemize}
+    \item \textbf{SNMPv1}: Original, community-based authentication
+    \item \textbf{SNMPv2c}: Improved efficiency, still uses communities
+    \item \textbf{SNMPv3}: Adds encryption and authentication (most secure)
+\end{itemize}
+\end{keybox}
+
+\subsection{Unit V Summary}
+
+\begin{keybox}{Key Concepts Checklist}
+\begin{itemize}
+    \item DNS: Hierarchical system, record types (A, AAAA, MX, CNAME, NS, PTR), resolution process
+    \item HTTP: Methods (GET, POST, PUT, DELETE), request/response structure, status codes
+    \item HTTP versions: 1.0 (one per connection), 1.1 (persistent), 2.0 (multiplexing)
+    \item HTTPS: HTTP + TLS/SSL, provides confidentiality, integrity, authentication
+    \item SMTP: Send email, port 25/587, push protocol
+    \item POP3: Retrieve email, port 110, downloads and typically deletes
+    \item IMAP: Advanced retrieval, port 143, keeps on server, folder management
+    \item MIME: Extends email for non-ASCII, attachments, multipart
+    \item FTP: File transfer, two connections (control + data), active/passive modes
+    \item Other: DHCP (IP assignment), Telnet (insecure remote access), SSH (secure remote access), SNMP (network management)
+\end{itemize}
+\end{keybox}
+
+\newpage
+
+% ============================================================================
+% UNIT VI: NETWORK SECURITY
+% ============================================================================
+
+\section{Unit VI: Network Security (7 Hours)}
+
+\subsection{Introduction to Network Security}
+
+\subsubsection{Prerequisites Review}
+
+Before studying network security, review:
+
+\begin{conceptbox}{Foundation Concepts}
+\begin{itemize}
+    \item \textbf{Binary and Hexadecimal}: Number systems for representing data
+    \item \textbf{XOR Operation}: Used extensively in encryption
+    \item \textbf{Prime Numbers}: Foundation of asymmetric cryptography
+    \item \textbf{Network Protocols}: TCP/IP, how data flows through networks
+    \item \textbf{Authentication}: Verifying identity
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Why Network Security Matters}
+
+In our interconnected world, network security protects:
+\begin{itemize}
+    \item Personal data (passwords, financial information)
+    \item Business assets (trade secrets, customer data)
+    \item Critical infrastructure (power grids, hospitals)
+    \item National security (government communications)
+\end{itemize}
+
+\begin{examplebox}{Security Breach Example}
+Without proper security:
+\begin{itemize}
+    \item Your password could be stolen from a coffee shop WiFi
+    \item Hackers could modify your bank transfer amount
+    \item Attackers could impersonate your bank's website
+    \item Your email could be read by unauthorized parties
+\end{itemize}
+\end{examplebox}
+
+\subsection{Security Services}
+
+\subsubsection{Confidentiality}
+
+\textbf{Confidentiality} ensures that information is accessible only to authorized parties.
+
+\begin{conceptbox}{Confidentiality Mechanisms}
+\begin{itemize}
+    \item Encryption (symmetric and asymmetric)
+    \item Access control
+    \item Physical security
+    \item Authentication
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{Confidentiality in Action}
+When you use HTTPS:
+\begin{itemize}
+    \item Your credit card number is encrypted
+    \item Eavesdroppers see only scrambled data
+    \item Only your browser and the server can read the actual data
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Integrity}
+
+\textbf{Integrity} ensures data hasn't been modified in unauthorized ways.
+
+\begin{conceptbox}{Integrity Mechanisms}
+\begin{itemize}
+    \item Hash functions (MD5, SHA)
+    \item Message Authentication Codes (MAC)
+    \item Digital signatures
+    \item Checksums
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Authentication}
+
+\textbf{Authentication} verifies the identity of users, devices, or systems.
+
+\begin{keybox}{Authentication Factors}
+\begin{itemize}
+    \item \textbf{Something you know}: Password, PIN
+    \item \textbf{Something you have}: Smart card, phone, token
+    \item \textbf{Something you are}: Fingerprint, face recognition, biometrics
+    \item \textbf{Multi-Factor Authentication (MFA)}: Combines two or more factors
+\end{itemize}
+\end{keybox}
+
+\subsubsection{Non-Repudiation}
+
+\textbf{Non-repudiation} prevents denial of actions — proves who did what.
+
+\begin{conceptbox}{Non-Repudiation Mechanisms}
+\begin{itemize}
+    \item Digital signatures
+    \item Audit logs
+    \item Timestamps
+    \item Certificates
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{Non-Repudiation Example}
+Digital signature on contract:
+\begin{itemize}
+    \item You sign document with your private key
+    \item Signature proves you signed it
+    \item You cannot later deny signing
+    \item Like notarizing a document
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Availability}
+
+\textbf{Availability} ensures authorized users can access resources when needed.
+
+\begin{conceptbox}{Availability Threats and Defenses}
+\textbf{Threats:}
+\begin{itemize}
+    \item Denial of Service (DoS) attacks
+    \item Hardware failures
+    \item Natural disasters
+    \item Power outages
+\end{itemize}
+
+\textbf{Defenses:}
+\begin{itemize}
+    \item Redundancy (backup systems)
+    \item Load balancing
+    \item DDoS protection
+    \item Regular backups
+\end{itemize}
+\end{conceptbox}
+
+\subsection{Threats and Attack Types}
+
+\subsubsection{Passive vs Active Threats}
+
+\begin{center}
+\begin{tabular}{|p{3cm}|p{5.5cm}|p{5.5cm}|}
+\hline
+\textbf{Aspect} & \textbf{Passive Threats} & \textbf{Active Threats} \\
+\hline
+Action & Observation only & Modification/disruption \\
+\hline
+Detection & Very difficult & Easier to detect \\
+\hline
+Prevention & Easier & More difficult \\
+\hline
+Examples & Eavesdropping, traffic analysis & Masquerading, modification, DoS \\
+\hline
+Goal & Information gathering & Cause damage or gain unauthorized access \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Eavesdropping}
+
+\textbf{Eavesdropping} is secretly listening to private communications.
+
+\begin{examplebox}{Eavesdropping Scenarios}
+\begin{itemize}
+    \item Packet sniffing on public WiFi
+    \item Intercepting unencrypted emails
+    \item Wire tapping phone lines
+    \item Man-in-the-middle attacks
+\end{itemize}
+\textbf{Defense}: Encryption (TLS/SSL, VPNs)
+\end{examplebox}
+
+\subsubsection{Masquerading (Spoofing)}
+
+\textbf{Masquerading} is pretending to be someone or something else.
+
+\begin{conceptbox}{Types of Masquerading}
+\begin{itemize}
+    \item \textbf{IP Spoofing}: Fake source IP address
+    \item \textbf{Email Spoofing}: Fake sender address
+    \item \textbf{DNS Spoofing}: Redirect to malicious sites
+    \item \textbf{Phishing}: Fake website mimicking legitimate one
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{Phishing Attack}
+\begin{enumerate}
+    \item You receive email appearing to be from your bank
+    \item Email says "verify your account" with link
+    \item Link goes to fake website (looks like your bank)
+    \item You enter username/password
+    \item Attacker now has your credentials
+\end{enumerate}
+\textbf{Defense}: Authentication, digital signatures, user education
+\end{examplebox}
+
+\subsubsection{Replay Attack}
+
+\textbf{Replay attack} retransmits valid data to repeat or delay the action.
+
+\begin{examplebox}{Replay Attack Scenario}
+\begin{enumerate}
+    \item You send encrypted command: "Transfer \$100 to account X"
+    \item Attacker intercepts encrypted message
+    \item Later, attacker resends same encrypted message
+    \item Bank processes it again: another \$100 transferred
+\end{enumerate}
+\textbf{Defense}: Timestamps, nonces (number used once), sequence numbers
+\end{examplebox}
+
+\subsubsection{Message Modification}
+
+\textbf{Modification attack} alters messages in transit.
+
+\begin{examplebox}{Modification Example}
+\begin{itemize}
+    \item Original: "Transfer \$100 to Bob"
+    \item Modified: "Transfer \$1000 to Attacker"
+    \item Without integrity checking, modification undetected
+\end{itemize}
+\textbf{Defense}: Message Authentication Codes, digital signatures
+\end{examplebox}
+
+\subsubsection{Denial of Service (DoS)}
+
+\textbf{DoS} attacks make systems or networks unavailable.
+
+\begin{conceptbox}{DoS Attack Types}
+\begin{itemize}
+    \item \textbf{Flooding}: Overwhelm with traffic (SYN flood, UDP flood)
+    \item \textbf{Amplification}: Small request → large response (DNS amplification)
+    \item \textbf{Resource Exhaustion}: Consume CPU, memory, disk
+    \item \textbf{DDoS (Distributed DoS)}: Attack from multiple sources (botnets)
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{SYN Flood Attack}
+\begin{enumerate}
+    \item Attacker sends many SYN packets (fake source IPs)
+    \item Server responds with SYN-ACK, allocates resources
+    \item Final ACK never arrives (fake source)
+    \item Server's connection queue fills up
+    \item Legitimate connections rejected
+\end{enumerate}
+\textbf{Defense}: SYN cookies, rate limiting, DDoS protection services
+\end{examplebox}
+
+\subsection{Cryptography Fundamentals}
+
+\subsubsection{What is Cryptography?}
+
+\textbf{Cryptography} is the practice of securing communication through encryption.
+
+\begin{conceptbox}{Cryptography Terminology}
+\begin{itemize}
+    \item \textbf{Plaintext}: Original, readable message
+    \item \textbf{Ciphertext}: Encrypted, unreadable message
+    \item \textbf{Encryption}: Converting plaintext to ciphertext
+    \item \textbf{Decryption}: Converting ciphertext to plaintext
+    \item \textbf{Key}: Secret value used in encryption/decryption
+    \item \textbf{Algorithm/Cipher}: Method of encryption
+\end{itemize}
+\end{conceptbox}
+
+\subsection{Symmetric Cryptography}
+
+\subsubsection{How Symmetric Encryption Works}
+
+\textbf{Symmetric encryption} uses the \textbf{same key} for both encryption and decryption.
+
+\begin{keybox}{Symmetric Encryption Characteristics}
+\begin{itemize}
+    \item Single shared key
+    \item Fast and efficient
+    \item Key distribution problem (how to share key securely?)
+    \item Used for bulk data encryption
+\end{itemize}
+\end{keybox}
+
+\begin{examplebox}{Symmetric Encryption Process}
+\begin{enumerate}
+    \item Alice and Bob agree on secret key (K)
+    \item Alice encrypts message: Ciphertext = Encrypt(Plaintext, K)
+    \item Alice sends ciphertext to Bob
+    \item Bob decrypts: Plaintext = Decrypt(Ciphertext, K)
+\end{enumerate}
+\end{examplebox}
+
+\subsubsection{Data Encryption Standard (DES)}
+
+\textbf{DES} was a widely-used symmetric cipher, now considered insecure.
+
+\begin{conceptbox}{DES Characteristics}
+\begin{itemize}
+    \item 56-bit key (effectively, 64-bit with parity)
+    \item 64-bit block size
+    \item 16 rounds of encryption
+    \item Vulnerable to brute force (key too short)
+    \item Officially retired in 2005
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Triple DES (3DES)}
+
+\textbf{3DES} applies DES three times to increase security.
+
+\begin{conceptbox}{3DES Process}
+\begin{itemize}
+    \item Uses three 56-bit keys (K1, K2, K3)
+    \item Encrypt with K1, Decrypt with K2, Encrypt with K3
+    \item Effective key length: 168 bits (though effective security lower)
+    \item Slower than DES (3x operations)
+    \item Being phased out in favor of AES
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Advanced Encryption Standard (AES)}
+
+\textbf{AES} is the current standard for symmetric encryption.
+
+\begin{keybox}{AES Characteristics}
+\begin{itemize}
+    \item Key sizes: 128, 192, or 256 bits
+    \item Block size: 128 bits
+    \item Rounds: 10 (128-bit), 12 (192-bit), 14 (256-bit)
+    \item Fast and secure
+    \item Widely used: WiFi (WPA2), VPNs, SSL/TLS, file encryption
+\end{itemize}
+\end{keybox}
+
+\begin{examplebox}{AES Usage}
+\begin{itemize}
+    \item WhatsApp: End-to-end message encryption (AES-256)
+    \item WiFi: WPA2/WPA3 use AES
+    \item HTTPS: Often uses AES for bulk data encryption
+    \item Full disk encryption: BitLocker, FileVault use AES
+\end{itemize}
+\end{examplebox}
+
+\subsection{Asymmetric Cryptography (Public Key)}
+
+\subsubsection{How Asymmetric Encryption Works}
+
+\textbf{Asymmetric encryption} uses two different keys: public and private.
+
+\begin{keybox}{Asymmetric Encryption Principles}
+\begin{itemize}
+    \item \textbf{Key Pair}: Public key (shared with everyone) + Private key (kept secret)
+    \item \textbf{Encryption}: Encrypt with public key, decrypt with private key
+    \item \textbf{Digital Signature}: Sign with private key, verify with public key
+    \item \textbf{No key distribution problem}
+    \item \textbf{Slower than symmetric} (used for key exchange, not bulk data)
+\end{itemize}
+\end{keybox}
+
+\begin{examplebox}{Asymmetric Encryption Process}
+\textbf{Bob wants to send secret message to Alice:}
+\begin{enumerate}
+    \item Alice generates key pair (public + private)
+    \item Alice publishes public key
+    \item Bob encrypts message with Alice's public key
+    \item Bob sends ciphertext to Alice
+    \item Alice decrypts with her private key
+    \item Only Alice can decrypt (only she has private key)
+\end{enumerate}
+\end{examplebox}
+
+\subsubsection{RSA Algorithm}
+
+\textbf{RSA} is the most widely-used asymmetric algorithm.
+
+\begin{conceptbox}{RSA Overview}
+\begin{itemize}
+    \item Based on difficulty of factoring large numbers
+    \item Key sizes: 1024, 2048, 4096 bits (2048+ recommended)
+    \item Used for: Key exchange, digital signatures
+    \item Example: HTTPS uses RSA to exchange AES key
+\end{itemize}
+\end{conceptbox}
+
+\begin{conceptbox}{RSA Key Generation (Simplified)}
+\begin{enumerate}
+    \item Choose two large prime numbers: p and q
+    \item Calculate n = p × q
+    \item Calculate φ(n) = (p-1) × (q-1)
+    \item Choose e (public exponent), typically 65537
+    \item Calculate d (private exponent) such that e × d ≡ 1 (mod φ(n))
+    \item \textbf{Public key}: (e, n)
+    \item \textbf{Private key}: (d, n)
+\end{enumerate}
+\end{conceptbox}
+
+\begin{examplebox}{RSA Encryption/Decryption}
+\begin{itemize}
+    \item \textbf{Encrypt}: $C = M^e \mod n$
+    \item \textbf{Decrypt}: $M = C^d \mod n$
+    \item Where M = plaintext, C = ciphertext, e = public exponent, d = private exponent, n = modulus
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Diffie-Hellman Key Exchange}
+
+\textbf{Diffie-Hellman} allows two parties to establish a shared secret over an insecure channel.
+
+\begin{conceptbox}{Diffie-Hellman Process}
+\begin{enumerate}
+    \item Alice and Bob agree on public values: p (prime) and g (generator)
+    \item Alice chooses secret a, calculates $A = g^a \mod p$, sends A to Bob
+    \item Bob chooses secret b, calculates $B = g^b \mod p$, sends B to Alice
+    \item Alice calculates shared secret: $s = B^a \mod p$
+    \item Bob calculates shared secret: $s = A^b \mod p$
+    \item Both have same shared secret: $s = g^{ab} \mod p$
+    \item Eavesdropper can't determine s from A and B
+\end{enumerate}
+\end{conceptbox}
+
+\begin{examplebox}{Diffie-Hellman Example (Small Numbers)}
+\begin{itemize}
+    \item Public: p = 23, g = 5
+    \item Alice: secret a = 6, sends $A = 5^6 \mod 23 = 8$
+    \item Bob: secret b = 15, sends $B = 5^{15} \mod 23 = 19$
+    \item Alice: shared = $19^6 \mod 23 = 2$
+    \item Bob: shared = $8^{15} \mod 23 = 2$
+    \item Shared secret = 2
+\end{itemize}
+\end{examplebox}
+
+\subsection{Hash Functions}
+
+\subsubsection{What is a Hash Function?}
+
+A \textbf{cryptographic hash function} takes input of any size and produces fixed-size output (hash/digest).
+
+\begin{keybox}{Hash Function Properties}
+\begin{itemize}
+    \item \textbf{Deterministic}: Same input always produces same output
+    \item \textbf{Fast}: Quick to compute
+    \item \textbf{One-way}: Impossible to reverse (get input from output)
+    \item \textbf{Collision-resistant}: Hard to find two inputs with same hash
+    \item \textbf{Avalanche effect}: Small input change → completely different hash
+\end{itemize}
+\end{keybox}
+
+\begin{examplebox}{Hash Function Analogy}
+Think of hash as a fingerprint:
+\begin{itemize}
+    \item Uniquely identifies a document
+    \item Same document → same fingerprint
+    \item Changed document → completely different fingerprint
+    \item Can't recreate document from fingerprint
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{MD5 (Message Digest 5)}
+
+\begin{conceptbox}{MD5 Characteristics}
+\begin{itemize}
+    \item 128-bit (16-byte) hash
+    \item Fast to compute
+    \item \textbf{Cryptographically broken} (collisions found)
+    \item Still used for non-security purposes (checksums)
+    \item \textbf{DO NOT use for security}
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{SHA (Secure Hash Algorithm) Family}
+
+\begin{conceptbox}{SHA Variants}
+\begin{itemize}
+    \item \textbf{SHA-1}: 160-bit hash, deprecated (collisions found)
+    \item \textbf{SHA-2 Family}:
+    \begin{itemize}
+        \item SHA-224, SHA-256, SHA-384, SHA-512
+        \item Currently secure and widely used
+        \item SHA-256 most common
+    \end{itemize}
+    \item \textbf{SHA-3}: Latest standard, different design, additional security
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{SHA-256 Example}
+Input: \texttt{"Hello, World!"}\\
+SHA-256: \texttt{dffd6021bb2bd5b0af676290809ec3a53191dd81\\c7f70a4b28688a362182986f}
+
+Small change: \texttt{"Hello, world!"} (lowercase w)\\
+SHA-256: \texttt{315f5bdb76d078c43b8ac0064e4a0164612b1fce\\77c869345bfc94c75894edd3}
+
+Completely different!
+\end{examplebox}
+
+\subsubsection{Hash Function Applications}
+
+\begin{conceptbox}{Common Uses}
+\begin{itemize}
+    \item \textbf{Password Storage}: Store hash, not plaintext
+    \item \textbf{Data Integrity}: Verify files haven't been modified
+    \item \textbf{Digital Signatures}: Sign hash instead of entire document
+    \item \textbf{Blockchain}: Link blocks using hashes
+    \item \textbf{Certificates}: Fingerprint for SSL/TLS certificates
+\end{itemize}
+\end{conceptbox}
+
+\subsection{Digital Signatures and Certificates}
+
+\subsubsection{Digital Signatures}
+
+\textbf{Digital signatures} provide authentication, integrity, and non-repudiation.
+
+\begin{conceptbox}{Digital Signature Process}
+\textbf{Signing:}
+\begin{enumerate}
+    \item Alice creates document
+    \item Alice computes hash of document
+    \item Alice encrypts hash with her private key (signature)
+    \item Alice sends document + signature
+\end{enumerate}
+
+\textbf{Verification:}
+\begin{enumerate}
+    \item Bob receives document + signature
+    \item Bob computes hash of received document
+    \item Bob decrypts signature with Alice's public key (gets original hash)
+    \item Bob compares both hashes
+    \item If match: Valid signature, document unchanged, Alice is sender
+\end{enumerate}
+\end{conceptbox}
+
+\begin{keybox}{Digital Signature Benefits}
+\begin{itemize}
+    \item \textbf{Authentication}: Proves who sent it
+    \item \textbf{Integrity}: Proves it wasn't modified
+    \item \textbf{Non-repudiation}: Sender can't deny sending
+\end{itemize}
+\end{keybox}
+
+\subsubsection{Digital Certificates}
+
+\textbf{Digital certificates} bind public keys to identities.
+
+\begin{conceptbox}{Certificate Contents}
+\begin{itemize}
+    \item Subject name (who the certificate is for)
+    \item Subject's public key
+    \item Issuer name (Certificate Authority)
+    \item Validity period (not before/not after dates)
+    \item Digital signature of issuer
+    \item Certificate serial number
+    \item Additional information (domain names, etc.)
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{Certificate Chain}
+When you visit \texttt{https://www.example.com}:
+\begin{enumerate}
+    \item Server presents its certificate
+    \item Certificate signed by Intermediate CA
+    \item Intermediate CA certificate signed by Root CA
+    \item Root CA certificate pre-installed in your browser
+    \item Browser verifies chain: Root → Intermediate → Server
+    \item If valid, secure connection established
+\end{enumerate}
+\end{examplebox}
+
+\subsection{Security Protocols}
+
+\subsubsection{IPSec (IP Security)}
+
+\textbf{IPSec} provides security at the IP layer, protecting all traffic.
+
+\begin{keybox}{IPSec Components}
+\begin{itemize}
+    \item \textbf{AH (Authentication Header)}: Authentication and integrity
+    \item \textbf{ESP (Encapsulating Security Payload)}: Confidentiality, authentication, integrity
+    \item \textbf{IKE (Internet Key Exchange)}: Key management
+\end{itemize}
+\end{keybox}
+
+\begin{conceptbox}{IPSec Modes}
+\begin{itemize}
+    \item \textbf{Transport Mode}:
+    \begin{itemize}
+        \item Encrypts payload only, original IP header intact
+        \item Used for end-to-end communication
+        \item More efficient
+    \end{itemize}
+    \item \textbf{Tunnel Mode}:
+    \begin{itemize}
+        \item Encrypts entire IP packet
+        \item New IP header added
+        \item Used for VPNs (site-to-site)
+    \end{itemize}
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{IPSec VPN Scenario}
+Company has offices in New York and London:
+\begin{itemize}
+    \item Employees in NY need to access London servers
+    \item IPSec VPN established between offices
+    \item Tunnel mode encrypts all traffic
+    \item Secure communication over public internet
+    \item Appears as single private network
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{SSL/TLS (Secure Sockets Layer / Transport Layer Security)}
+
+\textbf{TLS} (successor to SSL) provides secure communication over networks.
+
+\begin{keybox}{TLS Features}
+\begin{itemize}
+    \item Operates between application and transport layers
+    \item Provides: confidentiality, integrity, authentication
+    \item Uses: hybrid encryption (asymmetric for key exchange, symmetric for data)
+    \item Port: Varies by application (443 for HTTPS, 993 for IMAPS)
+\end{itemize}
+\end{keybox}
+
+\subsubsection{TLS Handshake}
+
+\begin{conceptbox}{TLS Handshake Process (Simplified)}
+\begin{enumerate}
+    \item \textbf{Client Hello}: Client sends supported cipher suites, TLS version
+    \item \textbf{Server Hello}: Server selects cipher suite, sends certificate
+    \item \textbf{Certificate Verification}: Client verifies server certificate
+    \item \textbf{Key Exchange}: Client generates pre-master secret, encrypts with server's public key
+    \item \textbf{Session Keys}: Both derive session keys from pre-master secret
+    \item \textbf{Finished Messages}: Both confirm handshake complete
+    \item \textbf{Secure Communication}: Data encrypted with session keys (AES)
+\end{enumerate}
+\end{conceptbox}
+
+\begin{examplebox}{HTTPS in Action}
+You visit \texttt{https://www.bank.com}:
+\begin{enumerate}
+    \item Browser initiates TLS handshake
+    \item Server presents certificate
+    \item Browser verifies certificate (signed by trusted CA)
+    \item RSA/ECDHE used to exchange AES key
+    \item All subsequent data encrypted with AES
+    \item Lock icon appears in browser
+\end{enumerate}
+\end{examplebox}
+
+\subsubsection{S/MIME (Secure/Multipurpose Internet Mail Extensions)}
+
+\textbf{S/MIME} adds security to email.
+
+\begin{keybox}{S/MIME Capabilities}
+\begin{itemize}
+    \item Encrypted email (confidentiality)
+    \item Digital signatures (authentication, integrity, non-repudiation)
+    \item Uses certificates
+    \item Supported by major email clients
+\end{itemize}
+\end{keybox}
+
+\begin{conceptbox}{S/MIME Process}
+\textbf{Sending Encrypted Email:}
+\begin{enumerate}
+    \item Alice obtains Bob's certificate (public key)
+    \item Alice encrypts email with Bob's public key
+    \item Only Bob can decrypt (with his private key)
+\end{enumerate}
+
+\textbf{Sending Signed Email:}
+\begin{enumerate}
+    \item Alice signs email with her private key
+    \item Bob verifies signature with Alice's public key
+    \item Proves Alice sent it and it's unchanged
+\end{enumerate}
+\end{conceptbox}
+
+\subsection{Security Infrastructure}
+
+\subsubsection{Public Key Infrastructure (PKI)}
+
+\textbf{PKI} is the framework for managing digital certificates and public keys.
+
+\begin{conceptbox}{PKI Components}
+\begin{itemize}
+    \item \textbf{Certificate Authority (CA)}: Issues and signs certificates
+    \item \textbf{Registration Authority (RA)}: Verifies certificate requests
+    \item \textbf{Certificate Repository}: Stores issued certificates
+    \item \textbf{Certificate Revocation List (CRL)}: Lists revoked certificates
+    \item \textbf{OCSP (Online Certificate Status Protocol)}: Real-time certificate validation
+\end{itemize}
+\end{conceptbox}
+
+\subsubsection{Certificate Authorities (CAs)}
+
+\textbf{CAs} are trusted third parties that issue digital certificates.
+
+\begin{keybox}{CA Trust Model}
+\begin{itemize}
+    \item \textbf{Root CAs}: Highest level, self-signed
+    \item \textbf{Intermediate CAs}: Signed by root, issue end-entity certificates
+    \item \textbf{Certificate Chain}: End-entity → Intermediate → Root
+    \item \textbf{Trust Store}: Pre-installed root certificates in OS/browser
+\end{itemize}
+\end{keybox}
+
+\begin{examplebox}{Well-Known CAs}
+\begin{itemize}
+    \item DigiCert
+    \item Let's Encrypt (free, automated)
+    \item GlobalSign
+    \item Comodo
+    \item VeriSign (now DigiCert)
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Firewalls}
+
+\textbf{Firewalls} control network traffic based on security rules.
+
+\begin{conceptbox}{Firewall Types}
+\begin{itemize}
+    \item \textbf{Packet Filtering}: Examines headers (IP, port, protocol)
+    \item \textbf{Stateful Inspection}: Tracks connection state
+    \item \textbf{Application Layer}: Inspects application data (deep packet inspection)
+    \item \textbf{Next-Generation}: Combines multiple techniques + IPS
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{Firewall Rules Example}
+\begin{itemize}
+    \item Allow: Outbound HTTP/HTTPS (ports 80, 443)
+    \item Allow: Inbound SSH from admin IP only (port 22)
+    \item Block: All inbound connections to port 23 (Telnet)
+    \item Allow: DNS queries (port 53)
+    \item Default: Deny all other traffic
+\end{itemize}
+\end{examplebox}
+
+\subsubsection{Intrusion Detection/Prevention Systems}
+
+\begin{conceptbox}{IDS vs IPS}
+\textbf{IDS (Intrusion Detection System):}
+\begin{itemize}
+    \item Monitors network traffic
+    \item Detects suspicious activity
+    \item Alerts administrators
+    \item Passive (doesn't block)
+\end{itemize}
+
+\textbf{IPS (Intrusion Prevention System):}
+\begin{itemize}
+    \item Monitors and analyzes traffic
+    \item Detects attacks
+    \item Automatically blocks/prevents
+    \item Active defense
+\end{itemize}
+\end{conceptbox}
+
+\begin{keybox}{Detection Methods}
+\begin{itemize}
+    \item \textbf{Signature-based}: Matches known attack patterns
+    \item \textbf{Anomaly-based}: Detects deviations from normal behavior
+    \item \textbf{Hybrid}: Combines both methods
+\end{itemize}
+\end{keybox}
+
+\subsubsection{Virtual Private Networks (VPNs)}
+
+\textbf{VPNs} create secure connections over public networks.
+
+\begin{conceptbox}{VPN Benefits}
+\begin{itemize}
+    \item Encrypts traffic (confidentiality)
+    \item Remote access to private networks
+    \item Hides IP address
+    \item Bypasses geographic restrictions
+    \item Protects on public WiFi
+\end{itemize}
+\end{conceptbox}
+
+\begin{examplebox}{VPN Use Cases}
+\begin{itemize}
+    \item \textbf{Remote Work}: Employee accesses company network from home
+    \item \textbf{Site-to-Site}: Connect branch offices securely
+    \item \textbf{Privacy}: Encrypt traffic on public WiFi
+    \item \textbf{Geo-restrictions}: Access region-locked content
+\end{itemize}
+\end{examplebox}
+
+\begin{conceptbox}{VPN Protocols}
+\begin{itemize}
+    \item \textbf{IPSec}: Secure, widely used for site-to-site
+    \item \textbf{OpenVPN}: Open-source, flexible, very secure
+    \item \textbf{L2TP/IPSec}: Combines L2TP (tunneling) with IPSec (security)
+    \item \textbf{WireGuard}: Modern, fast, simple
+    \item \textbf{PPTP}: Obsolete, insecure (avoid)
+\end{itemize}
+\end{conceptbox}
+
+\subsection{Unit VI Summary}
+
+\begin{keybox}{Key Concepts Checklist}
+\begin{itemize}
+    \item Security services: Confidentiality, integrity, authentication, non-repudiation, availability
+    \item Threats: Passive (eavesdropping) vs active (masquerading, modification, DoS)
+    \item Symmetric crypto: DES (obsolete), 3DES (phasing out), AES (current standard)
+    \item Asymmetric crypto: RSA (widely used), Diffie-Hellman (key exchange)
+    \item Hash functions: MD5 (broken), SHA-1 (deprecated), SHA-2/SHA-3 (secure)
+    \item Digital signatures: Authentication + integrity + non-repudiation
+    \item Certificates: Bind public keys to identities, issued by CAs
+    \item IPSec: IP-layer security, AH (auth) vs ESP (encryption), transport vs tunnel modes
+    \item SSL/TLS: Secure communication, handshake process, hybrid encryption
+    \item S/MIME: Secure email
+    \item PKI: Certificate management framework, CAs, trust chains
+    \item Firewalls: Control network traffic, various types
+    \item IDS/IPS: Detect/prevent intrusions
+    \item VPNs: Secure connections over public networks
+\end{itemize}
+\end{keybox}
+
+\newpage
+
+% ============================================================================
+% GLOSSARY
+% ============================================================================
+
+\section{Glossary of Key Terms}
+
+\begin{description}
+    \item[ACK (Acknowledgment):] TCP flag indicating acknowledgment of received data
+    
+    \item[AES (Advanced Encryption Standard):] Current standard symmetric encryption algorithm
+    
+    \item[ARP (Address Resolution Protocol):] Maps IP addresses to MAC addresses
+    
+    \item[Asymmetric Encryption:] Encryption using public/private key pairs
+    
+    \item[CIDR (Classless Inter-Domain Routing):] IP addressing scheme using prefix notation
+    
+    \item[Ciphertext:] Encrypted, unreadable data
+    
+    \item[Congestion Control:] Mechanism to prevent network overload
+    
+    \item[DHCP (Dynamic Host Configuration Protocol):] Automatically assigns IP addresses
+    
+    \item[DNS (Domain Name System):] Translates domain names to IP addresses
+    
+    \item[DoS (Denial of Service):] Attack making systems unavailable
+    
+    \item[Flow Control:] Mechanism preventing sender from overwhelming receiver
+    
+    \item[FTP (File Transfer Protocol):] Protocol for transferring files
+    
+    \item[Hash Function:] One-way function producing fixed-size output
+    
+    \item[HTTP (Hypertext Transfer Protocol):] Foundation of web communication
+    
+    \item[HTTPS:] HTTP over TLS/SSL (secure)
+    
+    \item[ICMP (Internet Control Message Protocol):] Used for error reporting (ping)
+    
+    \item[IMAP (Internet Message Access Protocol):] Advanced email retrieval protocol
+    
+    \item[IPSec (IP Security):] Security at IP layer
+    
+    \item[IPv4:] 32-bit IP addressing
+    
+    \item[IPv6:] 128-bit IP addressing
+    
+    \item[MAC (Media Access Control):] Physical address of network interface
+    
+    \item[MTU (Maximum Transmission Unit):] Maximum packet size
+    
+    \item[Multiplexing:] Combining multiple signals/connections
+    
+    \item[NAT (Network Address Translation):] Translates private IPs to public IP
+    
+    \item[OSPF (Open Shortest Path First):] Link state routing protocol
+    
+    \item[Packet:] Unit of data transmitted over network
+    
+    \item[PKI (Public Key Infrastructure):] Framework for managing certificates
+    
+    \item[Plaintext:] Original, readable data
+    
+    \item[POP3 (Post Office Protocol 3):] Email retrieval protocol
+    
+    \item[Port:] Logical endpoint for network communication
+    
+    \item[RIP (Routing Information Protocol):] Distance vector routing protocol
+    
+    \item[RSA:] Widely-used asymmetric encryption algorithm
+    
+    \item[RTT (Round-Trip Time):] Time for packet to reach destination and return
+    
+    \item[SHA (Secure Hash Algorithm):] Family of cryptographic hash functions
+    
+    \item[SMTP (Simple Mail Transfer Protocol):] Protocol for sending email
+    
+    \item[Socket:] IP address + port number
+    
+    \item[SSH (Secure Shell):] Secure remote access protocol
+    
+    \item[SSL/TLS:] Protocols providing secure communication
+    
+    \item[Subnet:] Subdivision of IP network
+    
+    \item[Symmetric Encryption:] Encryption using same key for encrypt/decrypt
+    
+    \item[TCP (Transmission Control Protocol):] Reliable, connection-oriented transport
+    
+    \item[Three-Way Handshake:] TCP connection establishment process
+    
+    \item[TTL (Time to Live):] Hop limit for packets
+    
+    \item[UDP (User Datagram Protocol):] Connectionless, unreliable transport
+    
+    \item[VLSM (Variable Length Subnet Masking):] Different-sized subnets in same network
+    
+    \item[VPN (Virtual Private Network):] Secure connection over public network
+\end{description}
+
+\newpage
+
+% ============================================================================
+% EXAM PREPARATION TIPS
+% ============================================================================
+
+\section{Exam Preparation Tips}
+
+\subsection{Study Strategies}
+
+\begin{keybox}{Effective Study Techniques}
+\begin{enumerate}
+    \item \textbf{Active Recall}: Test yourself regularly without looking at notes
+    \item \textbf{Spaced Repetition}: Review material at increasing intervals
+    \item \textbf{Understand, Don't Memorize}: Focus on concepts, not rote memorization
+    \item \textbf{Practice Problems}: Work through subnetting, routing algorithm examples
+    \item \textbf{Draw Diagrams}: Visualize concepts (TCP state machine, network topology)
+    \item \textbf{Teach Others}: Explaining concepts reinforces understanding
+\end{enumerate}
+\end{keybox}
+
+\subsection{Key Topics to Master}
+
+\begin{conceptbox}{High-Priority Topics}
+\textbf{Unit III - Network Layer:}
+\begin{itemize}
+    \item Subnetting calculations and VLSM
+    \item Dijkstra's and Bellman-Ford algorithms (know how to execute)
+    \item IPv4 vs IPv6 differences
+    \item Routing protocol comparisons
+\end{itemize}
+
+\textbf{Unit IV - Transport Layer:}
+\begin{itemize}
+    \item TCP vs UDP comparison
+    \item Three-way handshake and four-way termination
+    \item Flow control and congestion control mechanisms
+    \item Sequence/acknowledgment number calculations
+\end{itemize}
+
+\textbf{Unit V - Application Layer:}
+\begin{itemize}
+    \item DNS resolution process
+    \item HTTP methods and status codes
+    \item Email protocol differences (SMTP vs POP3 vs IMAP)
+    \item FTP modes
+\end{itemize}
+
+\textbf{Unit VI - Security:}
+\begin{itemize}
+    \item Symmetric vs asymmetric encryption
+    \item Hash function properties and usage
+    \item Digital signature process
+    \item IPSec modes and TLS handshake
+\end{itemize}
+\end{conceptbox}
+
+\subsection{Common Exam Question Types}
+
+\begin{examplebox}{Question Categories}
+\begin{itemize}
+    \item \textbf{Calculations}: Subnetting, checksum, timeout values
+    \item \textbf{Protocol Comparisons}: TCP vs UDP, RIP vs OSPF, POP3 vs IMAP
+    \item \textbf{Process Flows}: DNS resolution, TCP handshake, TLS handshake
+    \item \textbf{Algorithm Execution}: Dijkstra's, Bellman-Ford on given topology
+    \item \textbf{Security Scenarios}: Choosing appropriate mechanisms
+    \item \textbf{Conceptual}: Explain principles, identify correct statements
+\end{itemize}
+\end{examplebox}
+
+\subsection{Final Checklist}
+
+\begin{keybox}{Before the Exam}
+\begin{itemize}
+    \item[$\square$] Review all unit summaries
+    \item[$\square$] Practice subnetting problems
+    \item[$\square$] Trace through routing algorithms
+    \item[$\square$] Understand protocol header structures
+    \item[$\square$] Know port numbers for common services
+    \item[$\square$] Review security mechanisms and when to use each
+    \item[$\square$] Practice with past exams or sample questions
+    \item[$\square$] Get adequate rest before exam day
+\end{itemize}
+\end{keybox}
+
+\vspace{1cm}
+
+\begin{center}
+\large\textbf{Good luck with your exam!}\\
+\vspace{0.5cm}
+Remember: Understanding concepts is more valuable than memorizing facts.\\
+Focus on the "why" and "how," not just the "what."
+\end{center}
+
+\end{document}
