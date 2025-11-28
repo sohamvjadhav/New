@@ -70,6 +70,12 @@
     3.  Client verifies Certificate with a CA (Certificate Authority).
     4.  They exchange keys and start encrypted communication.
 
+### 4.3 S/MIME (Secure/Multipurpose Internet Mail Extensions)
+*   **Purpose**: Securing Email (Authentication, Integrity, Privacy).
+*   **Mechanism**:
+    *   **Signing**: Encrypt hash with sender's Private Key (Proof of Origin).
+    *   **Encryption**: Encrypt message with receiver's Public Key (Confidentiality).
+
 ---
 
 ## 5. Infrastructure
@@ -83,7 +89,11 @@
 *   **Packet Filtering**: "Block all traffic on Port 80 except from this IP."
 *   **Stateful**: "Only allow incoming traffic if it's a reply to an outgoing request."
 
-### 5.3 VPN (Virtual Private Network)
+### 5.3 IDS/IPS (Intrusion Detection/Prevention System)
+*   **IDS (Detection)**: The burglar alarm. Watches network traffic for suspicious patterns (signatures) and alerts the admin. Does not stop the attack.
+*   **IPS (Prevention)**: The security guard. Watches traffic and *blocks* it if it looks like an attack.
+
+### 5.4 VPN (Virtual Private Network)
 *   **Tunnel**: Creates a secure, encrypted tunnel over the public internet.
 *   **Use**: Employees working from home can access the office network securely.
 

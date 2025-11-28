@@ -270,8 +270,12 @@
 3.  <strong>ACK</strong>: Client says "Okay! I see Y. Connection established."</p>
 <h3>4.3 Flow Control</h3>
 <p><strong>Flow Control</strong> prevents the sender from overwhelming the <strong>receiver</strong>.
-*   <strong>Sliding Window Protocol</strong>: The receiver tells the sender "I have room for 5000 bytes" (Window Size). The sender sends 5000 bytes and waits for an update.
-*   <strong>Analogy</strong>: Eating a hot dog. You tell the person feeding you "Slow down!" if your mouth is full.</p>
+*   <strong>Stop-and-Wait</strong>: The sender sends one packet and waits for an ACK before sending the next.
+    *   <em>Analogy</em>: Sending a letter, waiting for a reply, then sending the next. Very slow but simple.
+*   <strong>Pipelining</strong>: The sender sends multiple packets without waiting for ACKs (filling the pipe).
+    *   <em>Analogy</em>: Sending 10 letters at once. Much faster.
+*   <strong>Sliding Window Protocol</strong>: Used to implement pipelining. The receiver tells the sender "I have room for 5000 bytes" (Window Size). The sender sends 5000 bytes and waits for an update.
+    *   <em>Analogy</em>: Eating a hot dog. You tell the person feeding you "Slow down!" if your mouth is full.</p>
 <h3>4.4 Congestion Control</h3>
 <p><strong>Congestion Control</strong> prevents the sender from overwhelming the <strong>network</strong> (routers).
 *   <strong>Analogy</strong>: Traffic jam. If everyone drives onto the highway at once, no one moves.
@@ -330,16 +334,23 @@
 <li><strong>MX</strong>: Mail Exchange (Email server).</li>
 <li><strong>CNAME</strong>: Canonical Name (Alias, e.g., <code>www</code> -&gt; <code>server1</code>).</li>
 <li><strong>NS</strong>: Name Server (Who is authoritative?).</li>
+<li><strong>PTR</strong>: Pointer Record (Reverse DNS). Maps IP to Domain Name.</li>
 </ul>
 <hr />
 <h2>3. HTTP (HyperText Transfer Protocol)</h2>
 <p><strong>HTTP</strong> is the protocol of the World Wide Web.</p>
-<h3>3.1 Request/Response</h3>
+<h3>3.1 Versions</h3>
+<ul>
+<li><strong>HTTP/1.0</strong>: Old. Created a new TCP connection for every file (very slow).</li>
+<li><strong>HTTP/1.1</strong>: Persistent connections (keep-alive). Reuse the connection for multiple files.</li>
+<li><strong>HTTP/2.0</strong>: Multiplexing. Send multiple requests at once over a single connection. Binary (not text).</li>
+</ul>
+<h3>3.2 Request/Response</h3>
 <ul>
 <li><strong>Request</strong>: Client sends "GET /index.html HTTP/1.1".</li>
 <li><strong>Response</strong>: Server sends "HTTP/1.1 200 OK" followed by the webpage.</li>
 </ul>
-<h3>3.2 Methods (Verbs)</h3>
+<h3>3.3 Methods (Verbs)</h3>
 <ul>
 <li><strong>GET</strong>: Retrieve data (Loading a page).</li>
 <li><strong>POST</strong>: Submit data (Filling a form).</li>
@@ -395,6 +406,11 @@
 <li><strong>Data Connection (Port 20)</strong>: Sends the actual file.</li>
 </ol>
 </li>
+<li><strong>Modes</strong>:<ul>
+<li><strong>Active Mode</strong>: Client opens a random port and server connects back to it (Problematic for firewalls).</li>
+<li><strong>Passive Mode</strong>: Server opens a random port and client connects to it (Firewall friendly).</li>
+</ul>
+</li>
 </ul>
 <h3>5.2 DHCP (Dynamic Host Configuration Protocol)</h3>
 <ul>
@@ -411,6 +427,16 @@
 <ul>
 <li><strong>Telnet</strong>: Remote login, but sends passwords in plain text (Unsafe!).</li>
 <li><strong>SSH</strong>: Encrypted remote login (Safe!). Used by admins to manage servers.</li>
+</ul>
+<h3>5.4 SNMP (Simple Network Management Protocol)</h3>
+<ul>
+<li><strong>Purpose</strong>: Monitoring network devices (routers, switches, printers).</li>
+<li><strong>Components</strong>:<ul>
+<li><strong>Manager</strong>: The central computer monitoring everything.</li>
+<li><strong>Agent</strong>: The software running on the router/switch.</li>
+<li><strong>MIB (Management Information Base)</strong>: The database of variables (CPU usage, bandwidth, errors).</li>
+</ul>
+</li>
 </ul>
 <hr />
 <h2>Unit V Summary</h2>
@@ -501,6 +527,15 @@
 </ol>
 </li>
 </ul>
+<h3>4.3 S/MIME (Secure/Multipurpose Internet Mail Extensions)</h3>
+<ul>
+<li><strong>Purpose</strong>: Securing Email (Authentication, Integrity, Privacy).</li>
+<li><strong>Mechanism</strong>:<ul>
+<li><strong>Signing</strong>: Encrypt hash with sender's Private Key (Proof of Origin).</li>
+<li><strong>Encryption</strong>: Encrypt message with receiver's Public Key (Confidentiality).</li>
+</ul>
+</li>
+</ul>
 <hr />
 <h2>5. Infrastructure</h2>
 <h3>5.1 PKI (Public Key Infrastructure)</h3>
@@ -514,7 +549,12 @@
 <li><strong>Packet Filtering</strong>: "Block all traffic on Port 80 except from this IP."</li>
 <li><strong>Stateful</strong>: "Only allow incoming traffic if it's a reply to an outgoing request."</li>
 </ul>
-<h3>5.3 VPN (Virtual Private Network)</h3>
+<h3>5.3 IDS/IPS (Intrusion Detection/Prevention System)</h3>
+<ul>
+<li><strong>IDS (Detection)</strong>: The burglar alarm. Watches network traffic for suspicious patterns (signatures) and alerts the admin. Does not stop the attack.</li>
+<li><strong>IPS (Prevention)</strong>: The security guard. Watches traffic and <em>blocks</em> it if it looks like an attack.</li>
+</ul>
+<h3>5.4 VPN (Virtual Private Network)</h3>
 <ul>
 <li><strong>Tunnel</strong>: Creates a secure, encrypted tunnel over the public internet.</li>
 <li><strong>Use</strong>: Employees working from home can access the office network securely.</li>
