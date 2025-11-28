@@ -29,17 +29,23 @@ How does your computer find `www.example.com`?
 *   **MX**: Mail Exchange (Email server).
 *   **CNAME**: Canonical Name (Alias, e.g., `www` -> `server1`).
 *   **NS**: Name Server (Who is authoritative?).
+*   **PTR**: Pointer Record (Reverse DNS). Maps IP to Domain Name.
 
 ---
 
 ## 3. HTTP (HyperText Transfer Protocol)
 **HTTP** is the protocol of the World Wide Web.
 
-### 3.1 Request/Response
+### 3.1 Versions
+*   **HTTP/1.0**: Old. Created a new TCP connection for every file (very slow).
+*   **HTTP/1.1**: Persistent connections (keep-alive). Reuse the connection for multiple files.
+*   **HTTP/2.0**: Multiplexing. Send multiple requests at once over a single connection. Binary (not text).
+
+### 3.2 Request/Response
 *   **Request**: Client sends "GET /index.html HTTP/1.1".
 *   **Response**: Server sends "HTTP/1.1 200 OK" followed by the webpage.
 
-### 3.2 Methods (Verbs)
+### 3.3 Methods (Verbs)
 *   **GET**: Retrieve data (Loading a page).
 *   **POST**: Submit data (Filling a form).
 *   **PUT**: Update data (Uploading a file).
@@ -87,6 +93,9 @@ Sending an email involves multiple protocols.
 *   **Two Connections**:
     1.  **Control Connection (Port 21)**: Sends commands (Login, CD, LS).
     2.  **Data Connection (Port 20)**: Sends the actual file.
+*   **Modes**:
+    *   **Active Mode**: Client opens a random port and server connects back to it (Problematic for firewalls).
+    *   **Passive Mode**: Server opens a random port and client connects to it (Firewall friendly).
 
 ### 5.2 DHCP (Dynamic Host Configuration Protocol)
 *   **Role**: Automatically assigns IP addresses to devices when they join a network.
@@ -99,6 +108,13 @@ Sending an email involves multiple protocols.
 ### 5.3 SSH (Secure Shell) vs Telnet
 *   **Telnet**: Remote login, but sends passwords in plain text (Unsafe!).
 *   **SSH**: Encrypted remote login (Safe!). Used by admins to manage servers.
+
+### 5.4 SNMP (Simple Network Management Protocol)
+*   **Purpose**: Monitoring network devices (routers, switches, printers).
+*   **Components**:
+    *   **Manager**: The central computer monitoring everything.
+    *   **Agent**: The software running on the router/switch.
+    *   **MIB (Management Information Base)**: The database of variables (CPU usage, bandwidth, errors).
 
 ---
 

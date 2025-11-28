@@ -57,8 +57,12 @@ Before talking, Alice and Bob must agree to talk.
 
 ### 4.3 Flow Control
 **Flow Control** prevents the sender from overwhelming the **receiver**.
-*   **Sliding Window Protocol**: The receiver tells the sender "I have room for 5000 bytes" (Window Size). The sender sends 5000 bytes and waits for an update.
-*   **Analogy**: Eating a hot dog. You tell the person feeding you "Slow down!" if your mouth is full.
+*   **Stop-and-Wait**: The sender sends one packet and waits for an ACK before sending the next.
+    *   *Analogy*: Sending a letter, waiting for a reply, then sending the next. Very slow but simple.
+*   **Pipelining**: The sender sends multiple packets without waiting for ACKs (filling the pipe).
+    *   *Analogy*: Sending 10 letters at once. Much faster.
+*   **Sliding Window Protocol**: Used to implement pipelining. The receiver tells the sender "I have room for 5000 bytes" (Window Size). The sender sends 5000 bytes and waits for an update.
+    *   *Analogy*: Eating a hot dog. You tell the person feeding you "Slow down!" if your mouth is full.
 
 ### 4.4 Congestion Control
 **Congestion Control** prevents the sender from overwhelming the **network** (routers).
